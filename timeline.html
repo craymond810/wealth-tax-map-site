@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wealth Tax Timeline</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1f2937, #020617);
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 1.25rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.9);
+      padding: 1.5rem 1.75rem 1.75rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      max-width: 40rem;
+    }
+
+    .timeline-wrapper {
+      margin-top: 0.75rem;
+    }
+
+    .axis {
+      position: relative;
+      margin: 1.5rem 0 0.5rem;
+      height: 4px;
+      background: linear-gradient(90deg, #4b5563, #6b7280, #4b5563);
+      border-radius: 999px;
+    }
+
+    .tick {
+      position: absolute;
+      width: 2px;
+      height: 10px;
+      background: #9ca3af;
+      top: -3px;
+      transform: translateX(-50%);
+      opacity: 0.5;
+    }
+
+    .event-dot {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #3b82f6;
+      border: 2px solid #0f172a;
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6);
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+    }
+
+    .event-dot.active {
+      background: #22c55e;
+      box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.18);
+      transform: translate(-50%, -50%) scale(1.02);
+    }
+
+    .event-label {
+      position: absolute;
+      top: 22px;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      color: #9ca3af;
+      white-space: nowrap;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 800px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .event-list {
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+      border-right: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    .event-list-item {
+      padding: 0.5rem 0.25rem;
+      display: flex;
+      gap: 0.6rem;
+      align-items: baseline;
+      cursor: pointer;
+      border-radius: 0.6rem;
+      transition: background 0.15s;
+    }
+
+    .event-list-item:hover {
+      background: rgba(55, 65, 81, 0.7);
+    }
+
+    .event-list-item.active {
+      background: rgba(34, 197, 94, 0.18);
+    }
+
+    .year {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      min-width: 3.2rem;
+    }
+
+    .event-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #f9fafb;
+    }
+
+    .region {
+      font-size: 0.75rem;
+      color: #a5b4fc;
+      margin-left: 0.15rem;
+    }
+
+    .tags {
+      margin-top: 0.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 0.08rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: #d1d5db;
+    }
+
+    .detail-card {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 1rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 1rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .detail-year {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: #9ca3af;
+    }
+
+    .detail-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .detail-body {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      line-height: 1.5;
+    }
+
+    .detail-meta {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-top: 0.2rem;
+    }
+
+    .pill {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .pill.intro { border-color: #60a5fa; color: #bfdbfe; }
+    .pill.abolish { border-color: #f97316; color: #fed7aa; }
+    .pill.reform { border-color: #22c55e; color: #bbf7d0; }
+    .pill.debate { border-color: #eab308; color: #fef9c3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">Wealth Taxes: International Timeline</div>
+      <div class="subtitle">
+        Click along the timeline to see when different countries introduced, abolished or reformed
+        wealth taxes. This is a simplified teaching timeline – dates and descriptions are rounded.
+      </div>
+    </div>
+
+    <div class="timeline-wrapper">
+      <div id="axis" class="axis"></div>
+    </div>
+
+    <div class="content">
+      <div class="event-list" id="event-list"></div>
+
+      <div class="detail-card" id="detail-card">
+        <div class="detail-year" id="detail-year">Select a year</div>
+        <div class="detail-title" id="detail-title">Timeline of wealth tax reforms</div>
+        <div class="pill-row" id="detail-pills"></div>
+        <div class="detail-body" id="detail-description">
+          Wealth taxes spread across parts of Europe in the late 20th century, then many were
+          repealed or reformed in the 1990s and 2000s. More recently, several countries and
+          organisations have revisited the idea in the context of rising inequality and fiscal
+          pressure.
+        </div>
+        <div class="detail-meta" id="detail-meta">
+          Tip: use this timeline alongside your world map to explain how policy design and
+          political pressures shaped different approaches.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simplified event data – dates & descriptions rounded for teaching purposes.
+    const events = [
+      {
+        year: 1960,
+        title: "Post-war expansion of wealth taxation",
+        region: "Europe",
+        type: "intro",
+        description:
+          "From the 1950s through the 1970s, a number of European countries, including France, Germany, the Netherlands and the Nordic states, experimented with recurrent taxes on net wealth as part of building modern welfare states.",
+        meta:
+          "Key idea: use wealth taxes to complement income taxes and fund social spending."
+      },
+      {
+        year: 1989,
+        title: "France introduces the ISF wealth tax",
+        region: "France",
+        type: "intro",
+        description:
+          "France creates the Impôt de solidarité sur la fortune (ISF), a national net wealth tax on high-wealth households. It becomes one of the most widely known examples of a modern wealth tax.",
+        meta:
+          "Symbolically important for debates about solidarity and taxing the very rich."
+      },
+      {
+        year: 1997,
+        title: "Germany and Denmark abolish wealth taxes",
+        region: "Germany & Denmark",
+        type: "abolish",
+        description:
+          "Concerns about capital flight, avoidance and relatively low revenue lead Germany and Denmark to repeal their personal net wealth taxes. Other countries start to question the efficiency of similar taxes.",
+        meta:
+          "Marks the start of a broader retreat from net wealth taxes in parts of Europe."
+      },
+      {
+        year: 2006,
+        title: "Finland and Iceland repeal their wealth taxes",
+        region: "Finland & Iceland",
+        type: "abolish",
+        description:
+          "Finland and Iceland follow the trend and abolish their net wealth taxes, citing administrative complexity and limited revenue compared with other tax bases.",
+        meta:
+          "By the mid-2000s several OECD countries have moved away from wealth taxes."
+      },
+      {
+        year: 2007,
+        title: "Sweden scraps its long-running wealth tax",
+        region: "Sweden",
+        type: "abolish",
+        description:
+          "Sweden abolishes its net wealth tax after decades of operation. Critics argued that it encouraged wealthy households to move assets abroad and that revenue had eroded over time.",
+        meta:
+          "Often used as a case study in debates about mobility of wealthy taxpayers."
+      },
+      {
+        year: 2011,
+        title: "Spain temporarily reintroduces wealth tax",
+        region: "Spain",
+        type: "reform",
+        description:
+          "After suspending its wealth tax in 2008, Spain brings back a reformed version in response to post-crisis fiscal pressures. Regional governments are given significant control over rates and reliefs.",
+        meta:
+          "Illustrates how wealth taxes can be revived in crises, but also how regional variation can undermine them."
+      },
+      {
+        year: 2018,
+        title: "France replaces wealth tax with real-estate tax",
+        region: "France",
+        type: "reform",
+        description:
+          "The broad ISF wealth tax is abolished and replaced by a narrower tax on high-value real-estate holdings (IFI). Financial wealth and most business assets are no longer subject to a net wealth tax.",
+        meta:
+          "Reform framed as making France more attractive to investors while still taxing property wealth."
+      },
+      {
+        year: 2020,
+        title: "Post-COVID wealth tax debates",
+        region: "Global",
+        type: "debate",
+        description:
+          "Following the COVID-19 pandemic, several countries and international organisations reopen discussions about taxing very high wealth, including proposals for one-off wealth levies and permanent wealth taxes.",
+        meta:
+          "In the UK, the Wealth Tax Commission examines options for a one-off or annual wealth tax."
+      },
+      {
+        year: 2023,
+        title: "Ongoing reforms and new proposals",
+        region: "Selected countries",
+        type: "debate",
+        description:
+          "Some countries with existing wealth taxes, such as Spain, Norway and Switzerland, continue to adjust thresholds and rates. Elsewhere, politicians propose new wealth or billionaire taxes even where none currently exist.",
+        meta:
+          "The global picture becomes a mix of a few countries with working wealth taxes and many debating alternatives."
+      }
+    ];
+
+    const minYear = 1960;
+    const maxYear = 2025;
+
+    const axisEl = document.getElementById("axis");
+    const listEl = document.getElementById("event-list");
+
+    function renderTimeline() {
+      // Basic decade ticks
+      for (let year = 1960; year <= 2025; year += 10) {
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        const pos = ((year - minYear) / (maxYear - minYear)) * 100;
+        tick.style.left = pos + "%";
+        axisEl.appendChild(tick);
+      }
+
+      events.forEach((event, index) => {
+        const pos = ((event.year - minYear) / (maxYear - minYear)) * 100;
+
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "event-dot";
+        dot.style.left = pos + "%";
+        dot.setAttribute("data-index", index);
+
+        const label = document.createElement("div");
+        label.className = "event-label";
+        label.textContent = event.year;
+        label.style.left = pos + "%";
+
+        dot.addEventListener("click", () => selectEvent(index));
+
+        axisEl.appendChild(dot);
+        axisEl.appendChild(label);
+
+        const item = document.createElement("div");
+        item.className = "event-list-item";
+        item.setAttribute("data-index", index);
+
+        item.addEventListener("click", () => selectEvent(index));
+
+        const year = document.createElement("div");
+        year.className = "year";
+        year.textContent = event.year;
+
+        const textWrapper = document.createElement("div");
+
+        const title = document.createElement("div");
+        title.className = "event-title";
+        title.textContent = event.title;
+
+        const region = document.createElement("span");
+        region.className = "region";
+        region.textContent = " · " + event.region;
+        title.appendChild(region);
+
+        const tags = document.createElement("div");
+        tags.className = "tags";
+
+        const typeTag = document.createElement("span");
+        typeTag.className = "tag";
+        if (event.type === "intro") typeTag.textContent = "Introduction / expansion";
+        else if (event.type === "abolish") typeTag.textContent = "Abolition";
+        else if (event.type === "reform") typeTag.textContent = "Reform";
+        else typeTag.textContent = "Debate / proposals";
+
+        tags.appendChild(typeTag);
+
+        textWrapper.appendChild(title);
+        textWrapper.appendChild(tags);
+
+        item.appendChild(year);
+        item.appendChild(textWrapper);
+
+        listEl.appendChild(item);
+      });
+    }
+
+    function selectEvent(index) {
+      const event = events[index];
+
+      // Update dots
+      document.querySelectorAll(".event-dot").forEach((dot) => {
+        dot.classList.toggle(
+          "active",
+          Number(dot.getAttribute("data-index")) === index
+        );
+      });
+
+      // Update list items
+      document.querySelectorAll(".event-list-item").forEach((item) => {
+        item.classList.toggle(
+          "active",
+          Number(item.getAttribute("data-index")) === index
+        );
+      });
+
+      // Update detail card
+      document.getElementById("detail-year").textContent = event.year;
+      document.getElementById("detail-title").textContent = event.title;
+      document.getElementById(
+        "detail-description"
+      ).textContent = event.description;
+      document.getElementById("detail-meta").textContent = event.meta;
+
+      const pills = document.getElementById("detail-pills");
+      pills.innerHTML = "";
+
+      const regionPill = document.createElement("span");
+      regionPill.className = "pill";
+      regionPill.textContent = event.region;
+      pills.appendChild(regionPill);
+
+      const typePill = document.createElement("span");
+      typePill.className = "pill";
+      if (event.type === "intro") {
+        typePill.classList.add("intro");
+        typePill.textContent = "Introduction / expansion";
+      } else if (event.type === "abolish") {
+        typePill.classList.add("abolish");
+        typePill.textContent = "Abolition";
+      } else if (event.type === "reform") {
+        typePill.classList.add("reform");
+        typePill.textContent = "Reform";
+      } else {
+        typePill.classList.add("debate");
+        typePill.textContent = "Debate / proposals";
+      }
+      pills.appendChild(typePill);
+    }
+
+    renderTimeline();
+    // Preselect the middle-ish event (France ISF) for interest
+    selectEvent(1);
+  </script>
+</body>
+</html>
