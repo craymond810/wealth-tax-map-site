@@ -32,4 +32,605 @@
       border: 1px solid rgba(148, 163, 184, 0.5);
       box-shadow: 0 24px 50px rgba(15, 23, 42, 0.8);
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minm
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+
+    header {
+      grid-column: 1 / -1;
+      margin-bottom: 0.5rem;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    header p {
+      margin-top: 0.3rem;
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
+
+    .timeline-column {
+      border-right: 1px solid rgba(55, 65, 81, 0.9);
+      padding-right: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .timeline-header {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: #9ca3af;
+      letter-spacing: 0.12em;
+    }
+
+    .timeline-strip {
+      margin-top: 0.5rem;
+      padding: 0.7rem 0;
+      border-radius: 999px;
+      background: radial-gradient(circle at left, #111827, #020617);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #4b5563 transparent;
+    }
+
+    .timeline-strip::-webkit-scrollbar {
+      height: 6px;
+    }
+    .timeline-strip::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .timeline-strip::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 999px;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.8);
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      transition: all 0.16s ease-out;
+      white-space: nowrap;
+    }
+
+    .chip-year {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .chip-label {
+      color: #9ca3af;
+    }
+
+    .chip-type-pill {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .chip-type-intro {
+      border-color: rgba(56, 189, 248, 0.8);
+      color: #7dd3fc;
+    }
+
+    .chip-type-abolish {
+      border-color: rgba(248, 113, 113, 0.8);
+      color: #fecaca;
+    }
+
+    .chip-type-reform {
+      border-color: rgba(129, 140, 248, 0.8);
+      color: #c7d2fe;
+    }
+
+    .chip-type-current {
+      border-color: rgba(52, 211, 153, 0.8);
+      color: #a7f3d0;
+    }
+
+    .chip.active {
+      background: linear-gradient(135deg, #1d283a, #0f172a);
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4);
+    }
+
+    .timeline-body {
+      margin-top: 0.4rem;
+      padding-left: 0.4rem;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 0.6rem;
+    }
+
+    .event-list {
+      display: grid;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .event-list span {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .details-column {
+      padding-left: 0.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .detail-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .badge {
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .badge-country {
+      border-color: rgba(96, 165, 250, 0.8);
+      color: #bfdbfe;
+    }
+
+    .badge-type {
+      border-color: rgba(129, 140, 248, 0.8);
+      color: #c7d2fe;
+    }
+
+    .badge-era {
+      border-color: rgba(52, 211, 153, 0.8);
+      color: #a7f3d0;
+    }
+
+    .detail-year {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .detail-title {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 0.15rem;
+      color: #e5e7eb;
+    }
+
+    .detail-main-text {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: #e5e7eb;
+    }
+
+    .detail-notes {
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .sources {
+      margin-top: 0.6rem;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      border-top: 1px dashed rgba(75, 85, 99, 0.8);
+      padding-top: 0.45rem;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 1rem;
+      }
+      .app {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+      }
+      .timeline-column {
+        border-right: none;
+        border-bottom: 1px solid rgba(55, 65, 81, 0.9);
+        padding-right: 0;
+        padding-bottom: 1rem;
+      }
+      .details-column {
+        padding-top: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Wealth Tax Timeline</h1>
+      <p>
+        Explore how net wealth taxes have been introduced, reformed, and abolished
+        over time in different countries.
+      </p>
+    </header>
+
+    <section class="timeline-column">
+      <div>
+        <div class="timeline-header">Key moments</div>
+        <div id="timeline-strip" class="timeline-strip">
+          <!-- chips injected by JS -->
+        </div>
+      </div>
+
+      <div class="timeline-body">
+        <p class="hint">
+          Tip: scroll horizontally to see more years, then click a point to load the
+          explanation on the right.
+        </p>
+        <div class="event-list" id="event-list">
+          <!-- populated by JS to summarise a few events -->
+        </div>
+      </div>
+    </section>
+
+    <section class="details-column">
+      <div class="detail-badge-row">
+        <span id="badge-country" class="badge badge-country">Country</span>
+        <span id="badge-type" class="badge badge-type">Event</span>
+        <span id="badge-era" class="badge badge-era">Era</span>
+      </div>
+
+      <div>
+        <div id="detail-year" class="detail-year">–</div>
+        <div id="detail-title" class="detail-title">
+          Select an event to see what happened.
+        </div>
+      </div>
+
+      <p id="detail-main" class="detail-main-text">
+        This interactive timeline tracks when wealth taxes were adopted, reformed or
+        repealed across countries. Click on a year above to load details here: the
+        motivation, design features, and what happened next.
+      </p>
+
+      <p id="detail-notes" class="detail-notes">
+        Many European countries experimented with wealth taxes in the late 20th
+        century, but most repealed them in the 1990s and 2000s. A handful still use
+        them today.
+      </p>
+
+      <div id="detail-sources" class="sources">
+        Sources: OECD and national tax reports; Wealth Tax Commission (UK); Tax
+        Foundation summaries; World Inequality data.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Timeline data – simplified, teaching-focused
+    const events = [
+      {
+        id: "early-expansion",
+        year: "1960s–1980s",
+        country: "Multiple OECD countries",
+        type: "Introduction",
+        typeTag: "intro",
+        era: "Post-war expansion",
+        title: "Net wealth taxes spread across Europe",
+        main: "In the decades after World War II, several European countries introduced annual net wealth taxes as part of a broader move towards progressive taxation and welfare-state expansion. Wealth taxes were seen as a way to ensure that those with substantial assets contributed more to rebuilding and social spending.",
+        notes:
+          "By around 1990, roughly a dozen OECD countries levied some form of individual net wealth tax, including Austria, Denmark, Finland, Germany, the Netherlands, Norway, Spain, Sweden and Switzerland.",
+        sources:
+          "OECD reports on net wealth taxes; IMF historical overviews."
+      },
+      {
+        id: "austria-abolish",
+        year: "1994",
+        country: "Austria",
+        type: "Abolition",
+        typeTag: "abolish",
+        era: "1990s reform wave",
+        title: "Austria abolishes its wealth tax",
+        main: "Austria was one of the first European countries to abolish its net wealth tax in the mid-1990s. The government argued that the tax was complex, raised little revenue, and risked harming competitiveness in a world of increasing capital mobility.",
+        notes:
+          "Austria’s repeal foreshadowed a wider trend: other European states soon followed, citing administrative costs, avoidance and concerns about investment.",
+        sources: "OECD Wealth Tax country notes; Tax Foundation summaries."
+      },
+      {
+        id: "denmark-germany-abolish",
+        year: "1997",
+        country: "Denmark & Germany",
+        type: "Abolition",
+        typeTag: "abolish",
+        era: "1990s reform wave",
+        title: "Denmark and Germany phase out wealth taxes",
+        main: "Denmark and Germany both abolished their net wealth taxes in 1997. In Germany, constitutional court rulings raised questions about unequal treatment of different assets. In Denmark, high marginal tax rates on wealth were seen as discouraging saving and pushing capital abroad.",
+        notes:
+          "Both cases are often cited in debates about constitutional constraints and the difficulty of maintaining a broad, neutral base for wealth taxes over time.",
+        sources:
+          "OECD and national finance ministry documents; academic work on wealth taxation in Denmark and Germany."
+      },
+      {
+        id: "netherlands-shift",
+        year: "2001",
+        country: "Netherlands",
+        type: "Reform",
+        typeTag: "reform",
+        era: "Early 2000s",
+        title: "Netherlands replaces wealth tax with deemed-return system",
+        main: "The Netherlands abolished its traditional wealth tax and moved to a system that taxes a deemed (assumed) rate of return on net wealth in \"Box 3\" of the income tax. Instead of taxing the stock of wealth directly each year, the tax base is an imputed return on savings and investments.",
+        notes:
+          "This reform is sometimes classed as a move away from wealth taxation, but economically it still taxes the ownership of assets through a stylised return.",
+        sources:
+          "Dutch tax reform documents; OECD country reviews; Tax Foundation analysis."
+      },
+      {
+        id: "finland-iceland-abolish",
+        year: "2006",
+        country: "Finland & Iceland",
+        type: "Abolition",
+        typeTag: "abolish",
+        era: "Pre-crisis reforms",
+        title: "Finland and Iceland abolish wealth taxes",
+        main: "Finland and Iceland both abolished their wealth taxes in 2006, citing administrative burdens, limited revenue, and worries about capital flight. Iceland later reintroduced a temporary wealth tax after the financial crisis but only for a few years.",
+        notes:
+          "These cases illustrate how wealth taxes may be used as temporary crisis measures, but are difficult to sustain once economic conditions change.",
+        sources:
+          "OECD; national tax legislation; research on Iceland’s temporary post-crisis wealth tax."
+      },
+      {
+        id: "sweden-abolish",
+        year: "2007",
+        country: "Sweden",
+        type: "Abolition",
+        typeTag: "abolish",
+        era: "Pre-crisis reforms",
+        title: "Sweden abolishes its wealth tax",
+        main: "Sweden abolished its wealth tax in 2007 after decades of complaints that it encouraged wealthy residents to move assets abroad or even emigrate. The tax base had eroded over time as assets were exempted or shifted into forms less exposed to the tax.",
+        notes:
+          "Despite abolition, Sweden remains a high-tax Nordic welfare state. This case is often used to argue that wealth taxes can be politically fragile even in relatively egalitarian societies.",
+        sources:
+          "Swedish government reports; OECD case studies; academic work by Zucman and co-authors."
+      },
+      {
+        id: "spain-reintroduce",
+        year: "2011",
+        country: "Spain",
+        type: "Reform",
+        typeTag: "reform",
+        era: "Post-financial crisis",
+        title: "Spain reintroduces wealth tax after the financial crisis",
+        main: "Spain had suspended its wealth tax in 2008, but reintroduced it in 2011 in response to fiscal pressures after the global financial crisis. The tax applies above a relatively high threshold and is administered by Spain’s autonomous communities.",
+        notes:
+          "Some regions, like Madrid, effectively apply a 100% rebate, meaning the tax is paid mainly in other regions. This internal tax competition weakens the overall base.",
+        sources:
+          "Spanish tax legislation; OECD Revenue Statistics; Tax Foundation analysis of Spanish wealth taxes."
+      },
+      {
+        id: "france-reform",
+        year: "2018",
+        country: "France",
+        type: "Reform",
+        typeTag: "reform",
+        era: "Recent reforms",
+        title: "France replaces ISF with a real-estate wealth tax (IFI)",
+        main: "In 2018, France replaced its long-standing net wealth tax (ISF) with a narrower real-estate wealth tax (IFI). The reform exempted most financial assets and business equity, aiming to encourage investment while still taxing high-value property.",
+        notes:
+          "The abolition of ISF was controversial: critics saw it as a tax cut for the rich, while supporters argued it would reduce capital flight and support entrepreneurship.",
+        sources:
+          "French budget documents; policy analysis by the OECD and French think-tanks."
+      },
+      {
+        id: "switzerland-current",
+        year: "Ongoing",
+        country: "Switzerland",
+        type: "Current system",
+        typeTag: "current",
+        era: "Today",
+        title: "Switzerland’s cantonal wealth taxes",
+        main: "Switzerland has long relied on cantonal and communal wealth taxes as a standard part of its tax mix. Rates are relatively low but the base is broad, and there is no general capital gains tax on most financial assets.",
+        notes:
+          "Switzerland is often cited as a rare example where recurrent wealth taxation raises meaningful revenue (around a few percent of total tax receipts) and is relatively stable politically.",
+        sources:
+          "OECD and Swiss federal statistics; comparative work on Swiss cantonal taxes."
+      },
+      {
+        id: "norway-current",
+        year: "Ongoing",
+        country: "Norway",
+        type: "Current system",
+        typeTag: "current",
+        era: "Today",
+        title: "Norway’s national and municipal wealth tax",
+        main: "Norway levies a wealth tax at both the state and municipal level on net assets above a threshold. The combined rate is under 1% but has been controversial, especially among owners of closely-held firms who argue it can force them to take dividends to pay the tax.",
+        notes:
+          "At the same time, Norway does not levy an inheritance tax, so the wealth tax is one of the main ways in which large fortunes are taxed over time.",
+        sources:
+          "Norwegian tax authority guidance; OECD Revenue Statistics."
+      },
+      {
+        id: "colombia-current",
+        year: "2010s–2020s",
+        country: "Colombia",
+        type: "Current system",
+        typeTag: "current",
+        era: "Today",
+        title: "Colombia’s modern net wealth (equity) tax",
+        main: "Colombia has implemented several versions of a wealth or equity tax, moving from temporary levies towards a more permanent net wealth tax on high-wealth individuals. Recent reforms set progressive rates above high thresholds.",
+        notes:
+          "Colombia provides a non-European example of wealth taxation, with evidence of strong behavioural responses around thresholds.",
+        sources:
+          "Colombian tax reform laws; IMF and OECD country reports."
+      },
+      {
+        id: "uk-debate",
+        year: "2020s",
+        country: "United Kingdom",
+        type: "Debate",
+        typeTag: "reform",
+        era: "Today",
+        title: "UK debates wealth taxes but focuses on alternatives",
+        main: "The UK has never had a broad annual wealth tax, but the idea has resurfaced since the global financial crisis and COVID-19. The independent Wealth Tax Commission (2020) assessed options for a one-off or annual wealth tax, but recent governments have favoured reforms to capital gains, inheritance, and property taxes instead.",
+        notes:
+          "For your project, this is where you situate your own policy proposal: should the UK join the small group of countries with a wealth tax, or redesign existing taxes on wealth instead?",
+        sources:
+          "Wealth Tax Commission final report; UK think-tank and Treasury publications."
+      },
+      {
+        id: "global-debate",
+        year: "2020s",
+        country: "Global",
+        type: "Debate",
+        typeTag: "intro",
+        era: "Today",
+        title: "Renewed global interest in taxing extreme wealth",
+        main: "Rising wealth inequality and large fiscal pressures have led to renewed calls for wealth taxes or coordinated minimum taxes on very rich individuals. Some countries have proposed a global minimum wealth tax rate for billionaires, while others focus on strengthening existing capital and inheritance taxes.",
+        notes:
+          "These debates highlight both the political appeal of wealth taxes and the practical challenges of designing them in an integrated global financial system.",
+        sources:
+          "World Inequality reports; Oxfam and OECD briefings; recent G20 discussions."
+      }
+    ];
+
+    const timelineStrip = document.getElementById("timeline-strip");
+    const eventListEl = document.getElementById("event-list");
+
+    const badgeCountry = document.getElementById("badge-country");
+    const badgeType = document.getElementById("badge-type");
+    const badgeEra = document.getElementById("badge-era");
+    const detailYear = document.getElementById("detail-year");
+    const detailTitle = document.getElementById("detail-title");
+    const detailMain = document.getElementById("detail-main");
+    const detailNotes = document.getElementById("detail-notes");
+    const detailSources = document.getElementById("detail-sources");
+
+    let activeId = null;
+
+    function typeLabel(type) {
+      switch (type) {
+        case "Introduction":
+          return "Introduction";
+        case "Abolition":
+          return "Abolition";
+        case "Reform":
+          return "Reform";
+        case "Current system":
+          return "Current system";
+        case "Debate":
+          return "Debate / proposals";
+        default:
+          return type;
+      }
+    }
+
+    function createChips() {
+      events.forEach((ev, index) => {
+        const chip = document.createElement("button");
+        chip.className = "chip";
+        chip.dataset.id = ev.id;
+
+        const yearSpan = document.createElement("span");
+        yearSpan.className = "chip-year";
+        yearSpan.textContent = ev.year;
+
+        const labelSpan = document.createElement("span");
+        labelSpan.className = "chip-label";
+        labelSpan.textContent = ev.country;
+
+        const pill = document.createElement("span");
+        pill.className = "chip-type-pill";
+        if (ev.typeTag === "intro") pill.classList.add("chip-type-intro");
+        if (ev.typeTag === "abolish") pill.classList.add("chip-type-abolish");
+        if (ev.typeTag === "reform") pill.classList.add("chip-type-reform");
+        if (ev.typeTag === "current") pill.classList.add("chip-type-current");
+        pill.textContent = typeLabel(ev.type);
+
+        chip.appendChild(yearSpan);
+        chip.appendChild(labelSpan);
+        chip.appendChild(pill);
+
+        chip.addEventListener("click", () => {
+          setActiveEvent(ev.id);
+        });
+
+        // Make the first event active by default
+        if (index === 0) {
+          activeId = ev.id;
+          chip.classList.add("active");
+        }
+
+        timelineStrip.appendChild(chip);
+      });
+    }
+
+    function populateEventList() {
+      // Show a compact list of a subset (or all) of events
+      events.forEach((ev) => {
+        const line = document.createElement("div");
+        line.innerHTML =
+          "<span>" +
+          ev.year +
+          " – " +
+          ev.country +
+          ":</span> " +
+          ev.title;
+        eventListEl.appendChild(line);
+      });
+    }
+
+    function setActiveEvent(id) {
+      activeId = id;
+      const ev = events.find((e) => e.id === id);
+      if (!ev) return;
+
+      // Update chip styles
+      document.querySelectorAll(".chip").forEach((chip) => {
+        chip.classList.toggle("active", chip.dataset.id === id);
+      });
+
+      // Update detail panel
+      badgeCountry.textContent = ev.country;
+      badgeType.textContent = typeLabel(ev.type);
+      badgeEra.textContent = ev.era;
+      detailYear.textContent = ev.year;
+      detailTitle.textContent = ev.title;
+      detailMain.textContent = ev.main;
+      detailNotes.textContent = ev.notes;
+      detailSources.textContent = "Sources: " + ev.sources;
+    }
+
+    // Initialise
+    createChips();
+    populateEventList();
+    // Set the first event as active
+    if (events.length > 0) {
+      setActiveEvent(events[0].id);
+    }
+  </script>
+</body>
+</html>
+
