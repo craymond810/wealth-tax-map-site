@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wealth Inequality Explorer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #111827, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      color: #e5e7eb;
+    }
+
+    .card {
+      max-width: 950px;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.97);
+      border-radius: 1.25rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.9);
+      padding: 1.5rem 1.75rem 1.75rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr);
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      max-width: 40rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .fieldset {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 0.9rem;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 0.9rem 1rem;
+    }
+
+    .fieldset-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #9ca3af;
+      margin-bottom: 0.4rem;
+    }
+
+    select, input[type="range"] {
+      width: 100%;
+      margin-top: 0.3rem;
+    }
+
+    select {
+      padding: 0.4rem 0.55rem;
+      border-radius: 0.6rem;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.9rem;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-top: 0.2rem;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      height: 4px;
+      background: #4b5563;
+      border-radius: 999px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #3b82f6;
+      border: 2px solid #0f172a;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #3b82f6;
+      border: 2px solid #0f172a;
+      cursor: pointer;
+    }
+
+    .slider-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #f9fafb;
+      min-width: 4.2rem;
+      text-align: right;
+    }
+
+    .small-note {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-top: 0.4rem;
+    }
+
+    .visual {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .bar-wrapper {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 0.9rem;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 1rem 1.1rem;
+    }
+
+    .bar-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 0.4rem;
+    }
+
+    .bar {
+      width: 100%;
+      height: 26px;
+      border-radius: 999px;
+      background: #111827;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .segment-top {
+      background: #3b82f6;
+      height: 100%;
+      transition: width 0.25s ease-out;
+    }
+
+    .segment-bottom {
+      background: #4b5563;
+      height: 100%;
+      flex: 1;
+    }
+
+    .bar-values {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+    }
+
+    .bar-values span {
+      color: #e5e7eb;
+    }
+
+    .explanation {
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      line-height: 1.5;
+    }
+
+    .explanation strong {
+      color: #f9fafb;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+    }
+
+    .chip {
+      font-size: 0.75rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.65);
+      color: #d1d5db;
+    }
+
+    .meta {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="title">Wealth Inequality Explorer</div>
+      <div class="subtitle">
+        Choose a stylised economy and see how much of total wealth is held by the top
+        <strong>X%</strong> of adults. The numbers here are simplified for teaching – they illustrate
+        patterns rather than exact statistics.
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="fieldset">
+        <div class="fieldset-title">1. Choose a scenario</div>
+        <select id="scenario-select">
+          <option value="uk">Stylised UK-style inequality</option>
+          <option value="more-equal">More equal economy</option>
+          <option value="more-unequal">More unequal economy</option>
+        </select>
+        <div class="small-note">
+          These profiles are based on typical patterns in OECD data, but rounded to keep things simple.
+        </div>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-title">2. Choose the top share of the population</div>
+        <div class="slider-row">
+          <input id="top-slider" type="range" min="1" max="50" value="10" />
+          <div class="slider-value">
+            Top <span id="top-percent-label">10</span>%
+          </div>
+        </div>
+        <div class="small-note">
+          Slide between 1% and 50% to see how concentrated wealth is at the top.
+        </div>
+      </div>
+
+      <div class="fieldset">
+        <div class="fieldset-title">3. Interpretation</div>
+        <p class="small-note">
+          In a highly unequal economy, a small fraction of households at the top own a large proportion
+          of total wealth. Understanding this helps motivate debates about wealth taxes, inheritance
+          taxes and other policies aimed at the very rich.
+        </p>
+      </div>
+    </div>
+
+    <div class="visual">
+      <div class="bar-wrapper">
+        <div class="bar-label-row">
+          <span id="bar-label-left">Top 10% share of total wealth</span>
+          <span id="bar-label-right">Stylised UK-style inequality</span>
+        </div>
+        <div class="bar">
+          <div id="segment-top" class="segment-top" style="width: 50%;"></div>
+          <div class="segment-bottom"></div>
+        </div>
+        <div class="bar-values">
+          <span id="top-share-label">Top 10%: ~50% of wealth</span>
+          <span id="bottom-share-label">Bottom 90%: ~50% of wealth</span>
+        </div>
+      </div>
+
+      <div>
+        <p class="explanation" id="explanation-text">
+          In this stylised UK scenario, the top <strong>10%</strong> of adults own about
+          <strong>half</strong> of all household wealth. The remaining 90% share the other half between them.
+          Wealth taxes typically focus only on the very top of the distribution, so even small changes in
+          the tax design can matter a lot for these households.
+        </p>
+        <div class="chips" id="chips-row">
+          <span class="chip">Top 1% hold a very large share</span>
+          <span class="chip">Middle 40% own some housing & pensions</span>
+          <span class="chip">Bottom 50% hold little net wealth</span>
+        </div>
+        <p class="meta" style="margin-top:0.5rem;">
+          Note: figures are stylised and rounded for clarity. You can replace them with more precise
+          country data later if you like.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Stylised wealth-share profiles for different economies.
+    // Each scenario has anchor points: p = top x% of adults, share = share of total wealth.
+    // Shares are between 0 and 1 and are deliberately rounded.
+    const scenarios = {
+      "uk": {
+        name: "Stylised UK-style inequality",
+        points: [
+          { p: 1, share: 0.20 },
+          { p: 5, share: 0.40 },
+          { p: 10, share: 0.50 },
+          { p: 20, share: 0.65 },
+          { p: 50, share: 0.90 }
+        ]
+      },
+      "more-equal": {
+        name: "More equal economy",
+        points: [
+          { p: 1, share: 0.10 },
+          { p: 5, share: 0.25 },
+          { p: 10, share: 0.35 },
+          { p: 20, share: 0.50 },
+          { p: 50, share: 0.80 }
+        ]
+      },
+      "more-unequal": {
+        name: "More unequal economy",
+        points: [
+          { p: 1, share: 0.30
