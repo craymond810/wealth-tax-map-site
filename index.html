@@ -2,10 +2,591 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Wealth Tax Map – Test Page</title>
+  <title>Wealth Tax World Map</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      background: #0f172a; /* dark blue */
+      color: #e5e7eb;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      width: 100%;
+      height: 100%;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .sidebar {
+      padding: 1.5rem;
+      background: radial-gradient(circle at top left, #1f2937, #020617);
+      border-left: 1px solid rgba(148, 163, 184, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .sidebar h2 {
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .pill.net-tax {
+      border-color: rgba(52, 211, 153, 0.6);
+      color: #a7f3d0;
+    }
+
+    .pill.no-net-tax {
+      border-color: rgba(248, 250, 252, 0.3);
+      color: #e5e7eb;
+    }
+
+    .pill.alternative {
+      border-color: rgba(96, 165, 250, 0.6);
+      color: #bfdbfe;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 1rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow-y: auto;
+    }
+
+    .card-section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #e5e7eb;
+    }
+
+    .meta {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      margin-top: 0.5rem;
+    }
+
+    .legend {
+      font-size: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .legend-swatch.net {
+      background: #10b981;
+    }
+
+    .legend-swatch.alt {
+      background: #3b82f6;
+    }
+
+    .legend-swatch.none {
+      background: #4b5563;
+    }
+
+    a.info-link {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+
+    a.info-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        height: auto;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1.3fr 1.2fr;
+        height: 100vh;
+      }
+      .sidebar {
+        border-left: none;
+        border-top: 1px solid rgba(148, 163, 184, 0.3);
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello from GitHub Pages 👋</h1>
-  <p>If you can see this in the browser, GitHub Pages is working.</p>
+  <div class="layout">
+    <div id="map"></div>
+
+    <aside class="sidebar">
+      <div>
+        <h1>Global Wealth Taxes Explorer</h1>
+        <p style="font-size:0.9rem; margin-top:0.35rem;">
+          Click a country to see whether it has a net wealth tax, how it works,
+          and what alternative taxes on wealth it uses.
+        </p>
+
+        <div class="legend">
+          <span class="legend-item">
+            <span class="legend-swatch net"></span> Net wealth tax
+          </span>
+          <span class="legend-item">
+            <span class="legend-swatch alt"></span> Asset-based / alternatives
+          </span>
+          <span class="legend-item">
+            <span class="legend-swatch none"></span> No specific wealth tax data
+          </span>
+        </div>
+      </div>
+
+      <div id="info-card" class="card">
+        <div>
+          <div class="card-section-title">Country</div>
+          <h2 id="country-name">No country selected</h2>
+        </div>
+
+        <div id="status-pills" class="pill-row"></div>
+
+        <div>
+          <div class="card-section-title">Summary</div>
+          <p id="summary-text">
+            Click on a country on the map to load information about its wealth
+            taxes and related policies.
+          </p>
+        </div>
+
+        <div>
+          <div class="card-section-title">Key Design Features</div>
+          <p id="design-text">
+            –
+          </p>
+        </div>
+
+        <div>
+          <div class="card-section-title">Alternatives / Related Taxes</div>
+          <p id="alternatives-text">
+            –
+          </p>
+        </div>
+
+        <div class="meta" id="meta-text">
+          Data here is a simplified summary for teaching. Always check up-to-date
+          official guidance for real-world use.
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script>
+    /******************************************************
+     * 1. DATA: Wealth tax info per country
+     *
+     * Keys are human-readable country names.
+     * You can expand/edit this object as needed.
+     ******************************************************/
+    const wealthTaxByCountry = {
+      // Countries with a net wealth tax
+      Switzerland: {
+        status: "net-wealth-tax",
+        hasNetWealthTax: true,
+        summary:
+          "Cantonal and communal net wealth tax on worldwide assets of residents. No federal wealth tax, but cantonal rates are progressive and typically range from around 0.1% up to about 1% depending on canton and municipality.",
+        design:
+          "Broad base including real estate, financial assets and business equity, with allowances. Administered at the canton/commune level rather than federally, and integrated into the wider Swiss tax system which has relatively low taxes on capital gains and, in some cantons, limited inheritance taxes.",
+        alternatives:
+          "Relies heavily on this recurrent wealth tax instead of broader inheritance or capital gains taxes. Property taxes and other local taxes also contribute.",
+        lastUpdated: "Dec 2025",
+        sourceTag: "Net wealth tax – Europe"
+      },
+
+      Norway: {
+        status: "net-wealth-tax",
+        hasNetWealthTax: true,
+        summary:
+          "National and municipal wealth tax on net assets above a threshold (around the upper-middle of the distribution). Combined rate is roughly 0.85% on taxable wealth above the threshold.",
+        design:
+          "Different valuation rules for housing and business assets. Often justified politically as a fairness measure in a Nordic welfare state, though contested by business owners who argue it hits closely-held firms.",
+        alternatives:
+          "Norway has no inheritance tax; the wealth tax partly substitutes for taxing large inheritances. Standard income taxes and VAT also play large roles.",
+        lastUpdated: "Dec 2025",
+        sourceTag: "Net wealth tax – Europe"
+      },
+
+      Spain: {
+        status: "net-wealth-tax",
+        hasNetWealthTax: true,
+        summary:
+          "Progressive net wealth tax (Impuesto sobre el Patrimonio) on individuals with net assets above approximately €700,000 (with an extra allowance for main residence). Rates vary by autonomous community but can reach around 3–3.5%.",
+        design:
+          "Administered by regions with their own rates and allowances. Some regions (e.g. Madrid) grant near full rebates, which weakens the overall base and encourages internal migration of high-wealth individuals.",
+        alternatives:
+          "Spain also levies inheritance and gift taxes, real estate taxes and capital gains tax. Recent debates focus on equalising regional treatment and the interaction with a new temporary 'solidarity' tax on large fortunes.",
+        lastUpdated: "Dec 2025",
+        sourceTag: "Net wealth tax – Europe"
+      },
+
+      Colombia: {
+        status: "net-wealth-tax",
+        hasNetWealthTax: true,
+        summary:
+          "Progressive net wealth (equity) tax on individuals with net wealth above a high threshold. Recent reforms made this a permanent tax with marginal rates roughly between 0.5% and 1.5% on wealth above the threshold.",
+        design:
+          "Worldwide assets of resident individuals are included; non-residents are taxed only on Colombian assets. Thresholds and brackets are defined in tax units (UVT), with the highest rate applying to very large fortunes.",
+        alternatives:
+          "Alongside the wealth tax, Colombia uses income taxes, VAT and other levies. Research on earlier Colombian wealth taxes shows strong behavioural responses and bunching just below thresholds, which is useful for your policy analysis work.",
+        lastUpdated: "Dec 2025",
+        sourceTag: "Net wealth tax – OECD"
+      },
+
+      // Countries with asset-based or alternative wealth taxes
+      France: {
+        status: "asset-based",
+        hasNetWealthTax: false,
+        summary:
+          "Until 2017 France levied a broad net wealth tax (ISF). It was replaced in 2018 by a narrower real-estate wealth tax (IFI) focused on high-value property.",
+        design:
+          "The IFI applies to real-estate assets above a threshold, with progressive rates. Financial assets and business equity are generally excluded, reflecting a shift towards encouraging investment while still taxing high property wealth.",
+        alternatives:
+          "France raises revenue from income tax, social contributions, VAT, capital gains and inheritance/gift taxes. The abolition of the broad wealth tax and replacement with IFI is a key case study for your project.",
+        lastUpdated: "Dec 2025",
+        sourceTag: "Real-estate wealth tax"
+      },
+
+      Italy: {
+        status: "asset-based",
+        hasNetWealthTax: false,
+        summary:
+          "No broad net wealth tax, but Italy levies small wealth-type taxes on certain financial assets and on real estate held abroad by residents.",
+        design:
+          "Taxes such as IVAFE (on foreign financial assets) and IVIE (on foreign real estate) effectively tax parts of residents' wealth held abroad.",
+        alternatives:
+          "Relies on income tax, corporate tax, VAT and property-related taxes, plus inheritance and gift taxes, to tax wealth indirectly.",
+        lastUpdated: "Dec 2025",
+        sourceTag: "Asset-based wealth taxes"
+      },
+
+      Belgium: {
+        status: "asset-based",
+        hasNetWealthTax: false,
+        summary:
+          "No comprehensive net wealth tax, but Belgium introduced a tax on large securities accounts, functioning as a narrow wealth-type levy on financial portfolios above a threshold.",
+        design:
+          "The tax targets the value of financial instruments held in Belgian or foreign securities accounts when they exceed a set amount.",
+        alternatives:
+          "Inheritance and gift taxes, as well as income tax on investment income, are the main instruments for taxing wealth.",
+        lastUpdated: "Dec 2025",
+        sourceTag: "Securities account tax"
+      },
+
+      // Example: UK (your home case)
+      "United Kingdom": {
+        status: "no-net-wealth-tax",
+        hasNetWealthTax: false,
+        summary:
+          "The UK has never implemented a broad annual net wealth tax. Wealth is instead taxed indirectly via property taxes, capital gains tax, and inheritance tax.",
+        design:
+          "Council Tax on housing (based on outdated bands), Stamp Duty Land Tax on property transactions, capital gains tax on realised asset gains, and inheritance tax on estates above a threshold. The Wealth Tax Commission (2020) explored options for a one-off or annual wealth tax but no such tax has been adopted.",
+        alternatives:
+          "Policy debate currently focuses on reforms to inheritance tax, capital gains tax, and possibly property or land value taxes, rather than a formal wealth tax.",
+        lastUpdated: "Dec 2025",
+        sourceTag: "No net wealth tax"
+      }
+    };
+
+    /******************************************************
+     * 2. Helper to deal with name mismatches
+     ******************************************************/
+    function normalizeName(rawName) {
+      const overrides = {
+        "United States of America": "United States",
+        "Russian Federation": "Russia",
+        "Korea, Republic of": "South Korea",
+        "Korea, Democratic People's Republic of": "North Korea",
+        "United Kingdom": "United Kingdom",
+        "Czech Republic": "Czechia",
+        "Viet Nam": "Vietnam",
+        "Syrian Arab Republic": "Syria"
+      };
+
+      return overrides[rawName] || rawName;
+    }
+
+    /******************************************************
+     * 3. Map initialisation
+     ******************************************************/
+    const map = L.map("map", {
+      zoomControl: true,
+      minZoom: 1.3,
+      worldCopyJump: true
+    }).setView([20, 0], 2);
+
+    // Simple dark-ish basemap from Carto
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+      {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & <a href="https://carto.com/">Carto</a>'
+      }
+    ).addTo(map);
+
+    let geojsonLayer;
+
+    /******************************************************
+     * 4. Style countries based on wealth-tax status
+     ******************************************************/
+    function getCountryStatus(name) {
+      const key = normalizeName(name);
+      const entry = wealthTaxByCountry[key];
+      if (!entry) return "no-data";
+      if (entry.status === "net-wealth-tax") return "net-wealth-tax";
+      if (entry.status === "asset-based") return "asset-based";
+      return "no-net-wealth-tax";
+    }
+
+    function style(feature) {
+      const status = getCountryStatus(feature.properties.name || "");
+      let fillColor;
+      if (status === "net-wealth-tax") {
+        fillColor = "#10b981"; // green
+      } else if (status === "asset-based") {
+        fillColor = "#3b82f6"; // blue
+      } else if (status === "no-net-wealth-tax") {
+        fillColor = "#4b5563"; // grey
+      } else {
+        fillColor = "#374151"; // darker grey for no data
+      }
+
+      return {
+        fillColor,
+        weight: 0.7,
+        opacity: 1,
+        color: "#020617",
+        fillOpacity: 0.7
+      };
+    }
+
+    function highlightFeature(e) {
+      const layer = e.target;
+      layer.setStyle({
+        weight: 1.5,
+        color: "#e5e7eb",
+        fillOpacity: 0.9
+      });
+
+      // bring to front for nicer effect
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+      }
+    }
+
+    function resetHighlight(e) {
+      geojsonLayer.resetStyle(e.target);
+    }
+
+    function onCountryClick(e) {
+      const props = e.target.feature.properties;
+      const rawName = props.name || "Unknown";
+      const name = normalizeName(rawName);
+      updateInfoPanel(name);
+    }
+
+    function onEachFeature(feature, layer) {
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: onCountryClick
+      });
+
+      const name = normalizeName(feature.properties.name || "");
+      const status = getCountryStatus(name);
+      let tooltipText = name;
+
+      if (status === "net-wealth-tax") {
+        tooltipText += " – has a net wealth tax";
+      } else if (status === "asset-based") {
+        tooltipText += " – asset-based wealth taxes / alternatives";
+      } else if (status === "no-net-wealth-tax") {
+        tooltipText += " – no net wealth tax (uses other instruments)";
+      } else {
+        tooltipText += " – no wealth tax data added yet";
+      }
+
+      layer.bindTooltip(tooltipText, {
+        sticky: true,
+        direction: "auto"
+      });
+    }
+
+    /******************************************************
+     * 5. Info panel updater
+     ******************************************************/
+    function clearPills() {
+      const statusPills = document.getElementById("status-pills");
+      statusPills.innerHTML = "";
+    }
+
+    function addPill(text, type) {
+      const pill = document.createElement("span");
+      pill.className = "pill";
+      if (type === "net") pill.classList.add("net-tax");
+      if (type === "alt") pill.classList.add("alternative");
+      if (type === "none") pill.classList.add("no-net-tax");
+      pill.textContent = text;
+      document.getElementById("status-pills").appendChild(pill);
+    }
+
+    function updateInfoPanel(countryName) {
+      const entry = wealthTaxByCountry[countryName];
+
+      document.getElementById("country-name").textContent = countryName;
+      clearPills();
+
+      if (!entry) {
+        addPill("No data yet", "none");
+        document.getElementById("summary-text").textContent =
+          "We haven’t added wealth tax information for this country yet. For your coursework, you can decide whether it has a net wealth tax, asset-based alternatives, or neither, and then add an entry for it in the JavaScript data object.";
+        document.getElementById("design-text").textContent = "–";
+        document.getElementById("alternatives-text").textContent = "–";
+        document.getElementById("meta-text").textContent =
+          "Tip: add this country to the wealthTaxByCountry object in map.js (or inline script) to show your own summary.";
+        return;
+      }
+
+      // Status pills
+      if (entry.status === "net-wealth-tax") {
+        addPill("Net wealth tax", "net");
+      } else if (entry.status === "asset-based") {
+        addPill("Asset-based wealth tax", "alt");
+      } else {
+        addPill("No net wealth tax", "none");
+      }
+
+      if (!entry.hasNetWealthTax && entry.status !== "asset-based") {
+        addPill("Relies on alternatives", "alt");
+      }
+
+      // Text sections
+      document.getElementById("summary-text").textContent =
+        entry.summary || "No summary available.";
+
+      document.getElementById("design-text").textContent =
+        entry.design || "No design details recorded yet.";
+
+      document.getElementById("alternatives-text").textContent =
+        entry.alternatives || "No information on alternatives recorded yet.";
+
+      const metaParts = [];
+      if (entry.lastUpdated) {
+        metaParts.push(`Last updated: ${entry.lastUpdated}.`);
+      }
+      if (entry.sourceTag) {
+        metaParts.push(`Source tag: ${entry.sourceTag}.`);
+      }
+      metaParts.push(
+        "This is a simplified teaching summary – not legal or tax advice."
+      );
+      document.getElementById("meta-text").textContent = metaParts.join(" ");
+    }
+
+    /******************************************************
+     * 6. Load GeoJSON and render
+     ******************************************************/
+    fetch(
+      "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        geojsonLayer = L.geoJSON(data, {
+          style,
+          onEachFeature
+        }).addTo(map);
+      })
+      .catch((err) => {
+        console.error("Failed to load GeoJSON", err);
+        alert(
+          "Could not load the world map data. Check your internet connection or the GeoJSON URL."
+        );
+      });
+
+    // Optional: centre UK in sidebar to start
+    updateInfoPanel("United Kingdom");
+  </script>
 </body>
 </html>
+
