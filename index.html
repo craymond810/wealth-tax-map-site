@@ -1,295 +1,279 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Global Wealth Tax Map</title>
+  <meta charset="UTF-8" />
+  <title>Wealth Tax World Map</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4fbf6;
-  overflow: hidden;
-}
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 
-#map-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-svg {
-  width: 100%;
-  height: 100%;
-  transition: transform 0.6s ease;
-}
+    body {
+      height: 100vh;
+      display: flex;
+      background: linear-gradient(135deg, #062f1f, #0b3d2e);
+      color: #e6fff2;
+    }
 
-.country {
-  stroke: #ffffff;
-  stroke-width: 0.5;
-  cursor: pointer;
-  transition: fill 0.3s, filter 0.3s;
-}
+    .layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      width: 100%;
+      height: 100%;
+    }
 
-.active { fill: #2e7d32; }
-.abolished { fill: #81c784; }
-.other { fill: #c8e6c9; }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
 
-.country:hover {
-  filter: brightness(1.2);
-}
+    .sidebar {
+      padding: 1.5rem;
+      background: radial-gradient(circle at top left, #0f3f2f, #041f17);
+      border-left: 1px solid rgba(46, 204, 113, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-#infoPanel {
-  position: absolute;
-  top: 0;
-  right: -400px;
-  width: 400px;
-  height: 100%;
-  background: white;
-  padding: 25px;
-  overflow-y: auto;
-  box-shadow: -4px 0 15px rgba(0,0,0,0.15);
-  transition: right 0.5s ease;
-  border-left: 6px solid #1b5e20;
-}
+    .sidebar h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: white;
+    }
 
-#infoPanel.open {
-  right: 0;
-}
+    .card {
+      background: rgba(0, 50, 35, 0.85);
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      flex: 1;
+      overflow-y: auto;
+    }
 
-h2 {
-  color: #1b5e20;
-}
+    .card-section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #86efac;
+      margin-top: 1rem;
+    }
 
-.legend {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background: white;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-</style>
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.5rem 0;
+    }
+
+    .pill {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(46, 204, 113, 0.4);
+      text-transform: uppercase;
+    }
+
+    .pill.net { background:#2ecc71; color:#062f1f; }
+    .pill.alt { background:#84cc16; color:#062f1f; }
+    .pill.none { background:#14532d; color:#e6fff2; }
+
+    .legend {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+
+    .net-swatch { background:#2ecc71; }
+    .alt-swatch { background:#84cc16; }
+    .none-swatch { background:#14532d; }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1.3fr 1.2fr;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="map-container">
+<div class="layout">
+  <div id="map"></div>
 
-<svg id="worldMap" viewBox="0 0 1000 500">
+  <aside class="sidebar">
+    <h1>Global Wealth Taxes Explorer</h1>
 
-<!-- Simplified full world layout -->
+    <div class="legend">
+      <span><div class="swatch net-swatch"></div> Net wealth tax</span>
+      <span><div class="swatch alt-swatch"></div> Asset-based</span>
+      <span><div class="swatch none-swatch"></div> No net wealth tax</span>
+    </div>
 
-<!-- North America -->
-<path class="other country" d="M80 200 L200 180 L250 220 L200 260 L100 240 Z"/>
+    <div id="info-card" class="card">
+      <h2 id="country-name">United Kingdom</h2>
 
-<!-- South America -->
-<path class="other country" d="M220 300 L260 340 L240 400 L200 360 Z"/>
+      <div id="status-pills" class="pill-row"></div>
 
-<!-- Europe Background -->
-<path class="other country" d="M350 150 L550 150 L600 250 L350 250 Z"/>
+      <div class="card-section-title">Summary</div>
+      <p id="summary-text">
+        The UK does not have a broad annual net wealth tax.
+      </p>
 
-<!-- France -->
-<path class="abolished country"
-onclick="zoomTo(430,220); showCountry('france')"
-d="M420 220 L450 210 L470 230 L455 250 L430 245 Z"/>
+      <div class="card-section-title">Design</div>
+      <p id="design-text">–</p>
 
-<!-- Spain -->
-<path class="active country"
-onclick="zoomTo(400,250); showCountry('spain')"
-d="M380 250 L420 250 L430 280 L390 285 Z"/>
-
-<!-- Germany -->
-<path class="abolished country"
-onclick="zoomTo(470,200); showCountry('germany')"
-d="M460 200 L490 200 L490 230 L465 235 Z"/>
-
-<!-- Switzerland -->
-<path class="active country"
-onclick="zoomTo(470,230); showCountry('switzerland')"
-d="M465 230 L480 230 L478 245 L465 240 Z"/>
-
-<!-- Italy -->
-<path class="abolished country"
-onclick="zoomTo(490,260); showCountry('italy')"
-d="M490 260 L510 290 L500 320 L480 290 Z"/>
-
-<!-- Norway -->
-<path class="active country"
-onclick="zoomTo(480,120); showCountry('norway')"
-d="M470 100 L500 90 L510 150 L480 160 Z"/>
-
-<!-- Sweden -->
-<path class="abolished country"
-onclick="zoomTo(520,120); showCountry('sweden')"
-d="M510 100 L540 90 L550 170 L520 180 Z"/>
-
-<!-- Africa -->
-<path class="other country" d="M400 260 L520 260 L550 400 L430 420 Z"/>
-
-<!-- Asia -->
-<path class="other country" d="M600 150 L900 180 L850 300 L600 280 Z"/>
-
-<!-- Australia -->
-<path class="other country" d="M820 350 L900 360 L880 420 L810 410 Z"/>
-
-</svg>
-
-<div class="legend">
-<strong>Legend</strong><br>
-🟢 Active Wealth Tax<br>
-🟩 Abolished Wealth Tax
+      <div class="card-section-title">Alternatives</div>
+      <p id="alternatives-text">–</p>
+    </div>
+  </aside>
 </div>
 
-<div id="infoPanel">
-<h2>Click a country</h2>
-<p>Wealth tax information will appear here.</p>
-</div>
-
-</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+/* ========= COUNTRY DATA ========= */
 
-const countryData = {
-
-france: {
-title: "🇫🇷 France",
-summary: `
-<strong>Summary (ISF – abolished 2018)</strong><br>
-Threshold: €1.3 million<br>
-Rates: 0.5% – 1.5%<br>
-Applied to global net wealth
-`,
-failure: `
-<strong>Why ISF Failed</strong><br>
-• Capital flight<br>
-• Wealth relocation<br>
-• Low revenue vs complexity
-`,
-alternative: `
-<strong>Alternative: IFI</strong><br>
-Applies only to real estate wealth<br>
-Same €1.3m threshold<br>
-Narrows base to reduce capital flight
-`
-},
-
-norway: {
-title: "🇳🇴 Norway",
-summary: `
-<strong>Summary</strong><br>
-Threshold: ~1.7m NOK<br>
-Rate: ~1%<br>
-Status: Active
-`,
-failure: "",
-alternative: `
-<strong>Key Issues</strong><br>
-Entrepreneur relocation debate
-`
-},
-
-spain: {
-title: "🇪🇸 Spain",
-summary: `
-<strong>Summary</strong><br>
-Threshold: €700,000<br>
-Rates: 0.2% – 3.5%<br>
-Regional variation
-`,
-failure: "",
-alternative: `
-<strong>Key Issues</strong><br>
-Regional inequality<br>
-Madrid offers relief
-`
-},
-
-switzerland: {
-title: "🇨🇭 Switzerland",
-summary: `
-<strong>Summary</strong><br>
-Cantonal wealth tax<br>
-0.1% – 1%
-`,
-failure: "",
-alternative: `
-<strong>Why It Works</strong><br>
-Moderate rates<br>
-Tax competition
-`
-},
-
-germany: {
-title: "🇩🇪 Germany",
-summary: `
-<strong>Summary (Until 1997)</strong><br>
-~1% rate<br>
-Abolished
-`,
-failure: `
-<strong>Why It Failed</strong><br>
-Unconstitutional valuation rules
-`,
-alternative: ""
-},
-
-sweden: {
-title: "🇸🇪 Sweden",
-summary: `
-<strong>Summary (Until 2007)</strong><br>
-~1.5% rate<br>
-Abolished
-`,
-failure: `
-<strong>Why It Failed</strong><br>
-Capital flight<br>
-Low revenue
-`,
-alternative: ""
-},
-
-italy: {
-title: "🇮🇹 Italy",
-summary: `
-<strong>Summary</strong><br>
-General wealth tax abolished 1990s
-`,
-failure: `
-<strong>Why It Failed</strong><br>
-Low revenue<br>
-Administrative burden
-`,
-alternative: `
-<strong>Alternatives</strong><br>
-IVAFE (financial assets)<br>
-IMU (property tax)
-`
-}
-
+const wealthTaxByCountry = {
+  "United Kingdom": {
+    status: "none",
+    summary: "The UK does not have an annual net wealth tax.",
+    design: "Wealth is taxed through property tax, capital gains tax, and inheritance tax.",
+    alternatives: "Council Tax, CGT, Inheritance Tax."
+  },
+  Switzerland: {
+    status: "net",
+    summary: "Cantonal net wealth tax on worldwide assets.",
+    design: "Progressive rates typically 0.1%–1%.",
+    alternatives: "Relatively low capital gains taxes."
+  },
+  Norway: {
+    status: "net",
+    summary: "National and municipal net wealth tax above threshold.",
+    design: "Combined rate approx. 0.85%.",
+    alternatives: "No inheritance tax."
+  },
+  Spain: {
+    status: "net",
+    summary: "Progressive net wealth tax above €700k.",
+    design: "Rates vary by region up to ~3%.",
+    alternatives: "Inheritance and capital gains taxes."
+  },
+  France: {
+    status: "alt",
+    summary: "Replaced wealth tax with real-estate wealth tax (IFI).",
+    design: "Applies to property only.",
+    alternatives: "Inheritance and capital gains taxes."
+  }
 };
 
-function showCountry(country) {
-const panel = document.getElementById("infoPanel");
-panel.classList.add("open");
+/* ========= MAP SETUP ========= */
 
-panel.innerHTML = `
-<h2>${countryData[country].title}</h2>
-<p>${countryData[country].summary}</p>
-${countryData[country].failure ? `<p>${countryData[country].failure}</p>` : ""}
-${countryData[country].alternative ? `<p>${countryData[country].alternative}</p>` : ""}
-`;
+const map = L.map("map", {
+  zoomControl: true,
+  minZoom: 1.3
+}).setView([20, 0], 2);
+
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  { maxZoom: 19 }
+).addTo(map);
+
+let geojsonLayer;
+
+function getColor(status) {
+  if (status === "net") return "#2ecc71";
+  if (status === "alt") return "#84cc16";
+  return "#14532d";
 }
 
-function zoomTo(x, y) {
-const svg = document.getElementById("worldMap");
-svg.style.transformOrigin = `${x}px ${y}px`;
-svg.style.transform = "scale(2)";
+function style(feature) {
+  const country = wealthTaxByCountry[feature.properties.name];
+  const status = country ? country.status : "none";
+
+  return {
+    fillColor: getColor(status),
+    weight: 0.7,
+    color: "#064e3b",
+    fillOpacity: 0.75
+  };
 }
+
+function highlightFeature(e) {
+  e.target.setStyle({
+    weight: 2,
+    color: "#ffffff",
+    fillOpacity: 0.9
+  });
+}
+
+function resetHighlight(e) {
+  geojsonLayer.resetStyle(e.target);
+}
+
+function updatePanel(name) {
+  const data = wealthTaxByCountry[name];
+
+  document.getElementById("country-name").textContent = name;
+  const pills = document.getElementById("status-pills");
+  pills.innerHTML = "";
+
+  if (!data) {
+    pills.innerHTML = `<span class="pill none">No data</span>`;
+    document.getElementById("summary-text").textContent = "No information added yet.";
+    document.getElementById("design-text").textContent = "–";
+    document.getElementById("alternatives-text").textContent = "–";
+    return;
+  }
+
+  pills.innerHTML = `<span class="pill ${data.status}">${data.status.toUpperCase()}</span>`;
+  document.getElementById("summary-text").textContent = data.summary;
+  document.getElementById("design-text").textContent = data.design;
+  document.getElementById("alternatives-text").textContent = data.alternatives;
+}
+
+function onEachFeature(feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight,
+    click: () => updatePanel(feature.properties.name)
+  });
+}
+
+fetch("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json")
+  .then(res => res.json())
+  .then(data => {
+    geojsonLayer = L.geoJSON(data, {
+      style,
+      onEachFeature
+    }).addTo(map);
+  });
+
+updatePanel("United Kingdom");
 
 </script>
-
 </body>
 </html>
