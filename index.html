@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Wealth Tax Map</title>
+<title>Wealth Tax World Map</title>
 
 <style>
 body {
@@ -26,23 +26,39 @@ body {
   padding: 20px;
   overflow-y: auto;
   background-color: white;
-  border-left: 5px solid #2e7d32;
+  border-left: 5px solid #1b5e20;
 }
 
 h2 {
   color: #1b5e20;
 }
 
-.country {
-  fill: #66bb6a;
-  stroke: white;
-  stroke-width: 1;
+.active {
+  fill: #2e7d32;
   cursor: pointer;
-  transition: fill 0.3s;
+  transition: 0.3s;
 }
 
-.country:hover {
-  fill: #2e7d32;
+.abolished {
+  fill: #81c784;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.active:hover,
+.abolished:hover {
+  fill: #1b5e20;
+}
+
+.legend {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
 </style>
 </head>
@@ -52,37 +68,47 @@ h2 {
 <div id="container">
 
 <div id="map">
-<svg viewBox="0 0 800 450" width="100%" height="100%">
+
+<svg viewBox="0 0 1000 500" width="100%" height="100%">
+
+<!-- Simplified realistic Europe section -->
 
 <!-- France -->
-<rect x="370" y="190" width="40" height="30"
-class="country" onclick="showCountry('france')" />
-
-<!-- Norway -->
-<rect x="380" y="90" width="25" height="40"
-class="country" onclick="showCountry('norway')" />
+<path class="abolished" onclick="showCountry('france')"
+d="M420 250 L440 240 L460 250 L455 270 L430 275 Z"/>
 
 <!-- Spain -->
-<rect x="330" y="220" width="45" height="30"
-class="country" onclick="showCountry('spain')" />
-
-<!-- Switzerland -->
-<rect x="390" y="210" width="20" height="15"
-class="country" onclick="showCountry('switzerland')" />
+<path class="active" onclick="showCountry('spain')"
+d="M380 280 L420 280 L430 300 L390 305 Z"/>
 
 <!-- Germany -->
-<rect x="400" y="180" width="35" height="35"
-class="country" onclick="showCountry('germany')" />
+<path class="abolished" onclick="showCountry('germany')"
+d="M450 230 L480 230 L480 260 L455 265 Z"/>
 
-<!-- Sweden -->
-<rect x="420" y="70" width="30" height="60"
-class="country" onclick="showCountry('sweden')" />
+<!-- Switzerland -->
+<path class="active" onclick="showCountry('switzerland')"
+d="M455 260 L470 260 L468 272 L455 270 Z"/>
 
 <!-- Italy -->
-<rect x="410" y="230" width="20" height="40"
-class="country" onclick="showCountry('italy')" />
+<path class="abolished" onclick="showCountry('italy')"
+d="M480 280 L495 300 L490 320 L475 305 Z"/>
+
+<!-- Norway -->
+<path class="active" onclick="showCountry('norway')"
+d="M460 120 L480 110 L490 150 L470 160 Z"/>
+
+<!-- Sweden -->
+<path class="abolished" onclick="showCountry('sweden')"
+d="M490 120 L510 110 L520 170 L500 180 Z"/>
 
 </svg>
+
+<div class="legend">
+<strong>Legend</strong><br>
+🟢 Active Wealth Tax<br>
+🟩 Abolished Wealth Tax
+</div>
+
 </div>
 
 <div id="infoPanel">
@@ -102,22 +128,21 @@ summary: `
 <strong>Summary (ISF – abolished 2018)</strong><br>
 Threshold: €1.3 million<br>
 Rates: 0.5% – 1.5% progressive<br>
-Applied to: Global net wealth (property + financial assets)<br>
-Key Feature: Business assets largely exempt
+Applied to: Global net wealth<br>
+Business assets largely exempt
 `,
 failure: `
 <strong>Why ISF Was Abolished</strong><br>
 • Capital flight concerns<br>
 • Wealth relocation<br>
 • Investment disincentives<br>
-• Low revenue relative to complexity
+• Low revenue vs complexity
 `,
 alternative: `
 <strong>Alternative: IFI</strong><br>
-• Introduced 2018<br>
 • Applies only to real estate wealth<br>
 • Same €1.3m threshold<br>
-• Protects financial/productive investment
+• Narrower base reduces capital flight
 `
 },
 
@@ -127,7 +152,6 @@ summary: `
 <strong>Summary</strong><br>
 Threshold: ~1.7m NOK<br>
 Rate: ~1% (municipal + state)<br>
-Applies to: Net wealth incl. shares & property<br>
 Status: Active
 `,
 failure: "",
@@ -144,14 +168,13 @@ summary: `
 <strong>Summary</strong><br>
 Threshold: €700,000 (regional variation)<br>
 Rates: 0.2% – 3.5%<br>
-Regions can adjust rates<br>
 Madrid offers 100% relief
 `,
 failure: "",
 alternative: `
 <strong>Key Issues</strong><br>
 • Regional inequality<br>
-• Wealth mobility concerns
+• Wealth mobility
 `
 },
 
@@ -159,17 +182,15 @@ switzerland: {
 title: "🇨🇭 Switzerland",
 summary: `
 <strong>Summary</strong><br>
-Threshold: Varies by canton<br>
-Rates: 0.1% – 1%<br>
-Collected at cantonal level<br>
+Rates: 0.1% – 1% (cantonal)<br>
 Status: Active
 `,
 failure: "",
 alternative: `
 <strong>Why It Works</strong><br>
 • Moderate rates<br>
-• Tax competition between cantons<br>
-• Integrated into tax system
+• Cantonal tax competition<br>
+• Integrated system
 `
 },
 
@@ -178,14 +199,13 @@ title: "🇩🇪 Germany",
 summary: `
 <strong>Summary (Until 1997)</strong><br>
 Rate: ~1%<br>
-Applied to net wealth<br>
 Status: Abolished
 `,
 failure: `
 <strong>Why It Failed</strong><br>
-• Ruled unconstitutional (valuation inequality)<br>
-• Administrative difficulty<br>
-• Political resistance
+• Ruled unconstitutional<br>
+• Valuation inequality<br>
+• Administrative issues
 `,
 alternative: ""
 },
@@ -195,13 +215,12 @@ title: "🇸🇪 Sweden",
 summary: `
 <strong>Summary (Until 2007)</strong><br>
 Rate: ~1.5%<br>
-Applied to global wealth<br>
 Status: Abolished
 `,
 failure: `
 <strong>Why It Failed</strong><br>
 • Capital flight<br>
-• Wealth held abroad<br>
+• Wealth moved abroad<br>
 • Low revenue vs distortion
 `,
 alternative: ""
@@ -210,8 +229,8 @@ alternative: ""
 italy: {
 title: "🇮🇹 Italy",
 summary: `
-<strong>Summary (Historical Wealth Tax)</strong><br>
-General net wealth tax abolished in 1990s
+<strong>Summary</strong><br>
+General wealth tax abolished in 1990s
 `,
 failure: `
 <strong>Why It Failed</strong><br>
@@ -220,7 +239,7 @@ failure: `
 `,
 alternative: `
 <strong>Alternatives</strong><br>
-• IVAFE (financial asset tax)<br>
+• IVAFE (financial assets)<br>
 • IMU (property tax)
 `
 }
@@ -245,4 +264,3 @@ ${countryData[country].alternative ? `<p>${countryData[country].alternative}</p>
 
 </body>
 </html>
-
