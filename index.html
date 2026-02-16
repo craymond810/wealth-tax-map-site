@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
+<meta charset="UTF-8">
 <title>Wealth Tax Map</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body {
@@ -21,43 +19,30 @@ body {
 #map {
   width: 65%;
   background-color: #e8f5e9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  color: #2e7d32;
 }
 
 #infoPanel {
   width: 35%;
   padding: 20px;
-  background-color: #ffffff;
   overflow-y: auto;
-  border-left: 4px solid #2e7d32;
+  background-color: white;
+  border-left: 5px solid #2e7d32;
 }
 
 h2 {
   color: #1b5e20;
 }
 
-.section-title {
-  color: #2e7d32;
-  margin-top: 15px;
-  font-weight: bold;
-}
-
-.country-btn {
-  padding: 8px 12px;
-  margin: 5px;
-  border: none;
-  background-color: #43a047;
-  color: white;
+.country {
+  fill: #66bb6a;
+  stroke: white;
+  stroke-width: 1;
   cursor: pointer;
-  border-radius: 5px;
+  transition: fill 0.3s;
 }
 
-.country-btn:hover {
-  background-color: #2e7d32;
+.country:hover {
+  fill: #2e7d32;
 }
 </style>
 </head>
@@ -66,152 +51,198 @@ h2 {
 
 <div id="container">
 
-  <div id="map">
-    <div>
-      <button class="country-btn" onclick="showCountry('france')">France</button>
-      <button class="country-btn" onclick="showCountry('norway')">Norway</button>
-      <button class="country-btn" onclick="showCountry('spain')">Spain</button>
-      <button class="country-btn" onclick="showCountry('switzerland')">Switzerland</button>
-      <button class="country-btn" onclick="showCountry('germany')">Germany</button>
-      <button class="country-btn" onclick="showCountry('sweden')">Sweden</button>
-      <button class="country-btn" onclick="showCountry('italy')">Italy</button>
-    </div>
-  </div>
+<div id="map">
+<svg viewBox="0 0 800 450" width="100%" height="100%">
 
-  <div id="infoPanel">
-    <h2>Click a country</h2>
-    <p>Information will appear here.</p>
-  </div>
+<!-- France -->
+<rect x="370" y="190" width="40" height="30"
+class="country" onclick="showCountry('france')" />
+
+<!-- Norway -->
+<rect x="380" y="90" width="25" height="40"
+class="country" onclick="showCountry('norway')" />
+
+<!-- Spain -->
+<rect x="330" y="220" width="45" height="30"
+class="country" onclick="showCountry('spain')" />
+
+<!-- Switzerland -->
+<rect x="390" y="210" width="20" height="15"
+class="country" onclick="showCountry('switzerland')" />
+
+<!-- Germany -->
+<rect x="400" y="180" width="35" height="35"
+class="country" onclick="showCountry('germany')" />
+
+<!-- Sweden -->
+<rect x="420" y="70" width="30" height="60"
+class="country" onclick="showCountry('sweden')" />
+
+<!-- Italy -->
+<rect x="410" y="230" width="20" height="40"
+class="country" onclick="showCountry('italy')" />
+
+</svg>
+</div>
+
+<div id="infoPanel">
+<h2>Click a country</h2>
+<p>Country wealth tax information will appear here.</p>
+</div>
 
 </div>
 
 <script>
-function showCountry(country) {
 
+const countryData = {
+
+france: {
+title: "🇫🇷 France",
+summary: `
+<strong>Summary (ISF – abolished 2018)</strong><br>
+Threshold: €1.3 million<br>
+Rates: 0.5% – 1.5% progressive<br>
+Applied to: Global net wealth (property + financial assets)<br>
+Key Feature: Business assets largely exempt
+`,
+failure: `
+<strong>Why ISF Was Abolished</strong><br>
+• Capital flight concerns<br>
+• Wealth relocation<br>
+• Investment disincentives<br>
+• Low revenue relative to complexity
+`,
+alternative: `
+<strong>Alternative: IFI</strong><br>
+• Introduced 2018<br>
+• Applies only to real estate wealth<br>
+• Same €1.3m threshold<br>
+• Protects financial/productive investment
+`
+},
+
+norway: {
+title: "🇳🇴 Norway",
+summary: `
+<strong>Summary</strong><br>
+Threshold: ~1.7m NOK<br>
+Rate: ~1% (municipal + state)<br>
+Applies to: Net wealth incl. shares & property<br>
+Status: Active
+`,
+failure: "",
+alternative: `
+<strong>Key Issues</strong><br>
+• Debate over entrepreneur relocation<br>
+• Political controversy
+`
+},
+
+spain: {
+title: "🇪🇸 Spain",
+summary: `
+<strong>Summary</strong><br>
+Threshold: €700,000 (regional variation)<br>
+Rates: 0.2% – 3.5%<br>
+Regions can adjust rates<br>
+Madrid offers 100% relief
+`,
+failure: "",
+alternative: `
+<strong>Key Issues</strong><br>
+• Regional inequality<br>
+• Wealth mobility concerns
+`
+},
+
+switzerland: {
+title: "🇨🇭 Switzerland",
+summary: `
+<strong>Summary</strong><br>
+Threshold: Varies by canton<br>
+Rates: 0.1% – 1%<br>
+Collected at cantonal level<br>
+Status: Active
+`,
+failure: "",
+alternative: `
+<strong>Why It Works</strong><br>
+• Moderate rates<br>
+• Tax competition between cantons<br>
+• Integrated into tax system
+`
+},
+
+germany: {
+title: "🇩🇪 Germany",
+summary: `
+<strong>Summary (Until 1997)</strong><br>
+Rate: ~1%<br>
+Applied to net wealth<br>
+Status: Abolished
+`,
+failure: `
+<strong>Why It Failed</strong><br>
+• Ruled unconstitutional (valuation inequality)<br>
+• Administrative difficulty<br>
+• Political resistance
+`,
+alternative: ""
+},
+
+sweden: {
+title: "🇸🇪 Sweden",
+summary: `
+<strong>Summary (Until 2007)</strong><br>
+Rate: ~1.5%<br>
+Applied to global wealth<br>
+Status: Abolished
+`,
+failure: `
+<strong>Why It Failed</strong><br>
+• Capital flight<br>
+• Wealth held abroad<br>
+• Low revenue vs distortion
+`,
+alternative: ""
+},
+
+italy: {
+title: "🇮🇹 Italy",
+summary: `
+<strong>Summary (Historical Wealth Tax)</strong><br>
+General net wealth tax abolished in 1990s
+`,
+failure: `
+<strong>Why It Failed</strong><br>
+• Low revenue<br>
+• Administrative inefficiency
+`,
+alternative: `
+<strong>Alternatives</strong><br>
+• IVAFE (financial asset tax)<br>
+• IMU (property tax)
+`
+}
+
+};
+
+
+function showCountry(country) {
 const panel = document.getElementById("infoPanel");
 
-if(country === "france") {
+if(!countryData[country]) return;
+
 panel.innerHTML = `
-<h2>🇫🇷 France</h2>
-
-<div class="section-title">Summary (ISF)</div>
-<p><strong>Threshold:</strong> €1.3 million<br>
-<strong>Rates:</strong> 0.5% – 1.5% progressive<br>
-<strong>Applied to:</strong> Global net wealth (financial + property)<br>
-<strong>Key Factor:</strong> Business assets largely exempt</p>
-
-<div class="section-title">Why ISF Was Abolished (2018)</div>
-<p>• Capital flight concerns<br>
-• Wealthy individuals relocating<br>
-• Low revenue vs complexity<br>
-• Investment discouragement concerns</p>
-
-<div class="section-title">Alternative: IFI</div>
-<p>• Replaced ISF in 2018<br>
-• Only applies to real estate wealth<br>
-• Same €1.3m threshold<br>
-• Designed to reduce capital flight</p>
+<h2>${countryData[country].title}</h2>
+<p>${countryData[country].summary}</p>
+${countryData[country].failure ? `<p>${countryData[country].failure}</p>` : ""}
+${countryData[country].alternative ? `<p>${countryData[country].alternative}</p>` : ""}
 `;
 }
 
-if(country === "norway") {
-panel.innerHTML = `
-<h2>🇳🇴 Norway</h2>
-
-<div class="section-title">Summary</div>
-<p><strong>Threshold:</strong> ~1.7m NOK<br>
-<strong>Rate:</strong> ~1% (municipal + state)<br>
-<strong>Applies to:</strong> Net wealth incl. shares + property<br>
-<strong>Status:</strong> Still active</p>
-
-<div class="section-title">Key Issues</div>
-<p>• Debate over entrepreneur relocation<br>
-• Ongoing political controversy</p>
-`;
-}
-
-if(country === "spain") {
-panel.innerHTML = `
-<h2>🇪🇸 Spain</h2>
-
-<div class="section-title">Summary</div>
-<p><strong>Threshold:</strong> €700,000 (regional variation)<br>
-<strong>Rates:</strong> 0.2% – 3.5%<br>
-<strong>Control:</strong> Regions can modify rates<br>
-<strong>Note:</strong> Madrid offers 100% relief</p>
-
-<div class="section-title">Key Issues</div>
-<p>• Regional inequality<br>
-• Mobility of wealthy individuals</p>
-`;
-}
-
-if(country === "switzerland") {
-panel.innerHTML = `
-<h2>🇨🇭 Switzerland</h2>
-
-<div class="section-title">Summary</div>
-<p><strong>Threshold:</strong> Varies by canton<br>
-<strong>Rates:</strong> ~0.1% – 1%<br>
-<strong>Collected at:</strong> Cantonal level<br>
-<strong>Status:</strong> Active</p>
-
-<div class="section-title">Why It Works</div>
-<p>• Moderate rates<br>
-• Tax competition between cantons<br>
-• Integrated into broader tax system</p>
-`;
-}
-
-if(country === "germany") {
-panel.innerHTML = `
-<h2>🇩🇪 Germany</h2>
-
-<div class="section-title">Summary (Until 1997)</div>
-<p><strong>Rate:</strong> ~1%<br>
-<strong>Status:</strong> Abolished</p>
-
-<div class="section-title">Why It Failed</div>
-<p>• Ruled unconstitutional (valuation inequality)<br>
-• Administrative difficulty<br>
-• Political resistance</p>
-`;
-}
-
-if(country === "sweden") {
-panel.innerHTML = `
-<h2>🇸🇪 Sweden</h2>
-
-<div class="section-title">Summary (Until 2007)</div>
-<p><strong>Rate:</strong> ~1.5%<br>
-<strong>Status:</strong> Abolished</p>
-
-<div class="section-title">Why It Failed</div>
-<p>• Capital flight<br>
-• Wealth moved abroad<br>
-• Low revenue relative to distortions</p>
-`;
-}
-
-if(country === "italy") {
-panel.innerHTML = `
-<h2>🇮🇹 Italy</h2>
-
-<div class="section-title">Summary (Historical)</div>
-<p><strong>Status:</strong> General wealth tax abolished (1990s)</p>
-
-<div class="section-title">Why It Failed</div>
-<p>• Low revenue<br>
-• Administrative inefficiency</p>
-
-<div class="section-title">Alternatives</div>
-<p>• IVAFE (financial asset tax)<br>
-• IMU (property tax)</p>
-`;
-}
-
-}
 </script>
 
 </body>
 </html>
+
