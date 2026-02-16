@@ -4,12 +4,9 @@
   <meta charset="UTF-8" />
   <title>Wealth Tax World Map</title>
 
-  <!-- Leaflet CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
   />
 
   <style>
@@ -17,8 +14,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
@@ -52,197 +48,232 @@
     .sidebar h1 {
       font-size: 1.4rem;
       font-weight: 600;
-      color: #ffffff;
+      color: white;
     }
 
-    .sidebar h2 {
-      font-size: 1.2rem;
-      margin-top: 0.5rem;
+    .card {
+      background: rgba(0, 50, 35, 0.85);
+      border-radius: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .card-section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #86efac;
+      margin-top: 1rem;
     }
 
     .pill-row {
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
-      margin-top: 0.5rem;
+      margin: 0.5rem 0;
     }
 
     .pill {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       padding: 0.25rem 0.6rem;
       border-radius: 999px;
       border: 1px solid rgba(46, 204, 113, 0.4);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
     }
 
-    .pill.net-tax {
-      background: rgba(46, 204, 113, 0.2);
-      color: #a7f3d0;
-      border-color: rgba(46, 204, 113, 0.7);
-    }
-
-    .pill.no-net-tax {
-      background: rgba(20, 83, 45, 0.6);
-      color: #d1fae5;
-    }
-
-    .pill.alternative {
-      background: rgba(132, 204, 22, 0.2);
-      color: #d9f99d;
-      border-color: rgba(132, 204, 22, 0.7);
-    }
-
-    .card {
-      background: rgba(0, 50, 35, 0.85);
-      border-radius: 1rem;
-      padding: 1rem 1.2rem;
-      border: 1px solid rgba(46, 204, 113, 0.3);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      overflow-y: auto;
-    }
-
-    .card-section-title {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #86efac;
-    }
-
-    .card p {
-      font-size: 0.9rem;
-      line-height: 1.5;
-      color: #e6fff2;
-    }
-
-    .meta {
-      font-size: 0.75rem;
-      color: #9ee6c8;
-      margin-top: 0.5rem;
-    }
+    .pill.net { background:#2ecc71; color:#062f1f; }
+    .pill.alt { background:#84cc16; color:#062f1f; }
+    .pill.none { background:#14532d; color:#e6fff2; }
 
     .legend {
       font-size: 0.8rem;
+      margin-top: 0.5rem;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-top: 0.75rem;
+      gap: 1rem;
     }
 
-    .legend-item {
-      display: inline-flex;
+    .legend span {
+      display: flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.4rem;
     }
 
-    .legend-swatch {
+    .swatch {
       width: 14px;
       height: 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(0, 0, 0, 0.4);
+      border-radius: 50%;
     }
 
-    .legend-swatch.net {
-      background: #2ecc71;
-    }
-
-    .legend-swatch.alt {
-      background: #84cc16;
-    }
-
-    .legend-swatch.none {
-      background: #14532d;
-    }
+    .net-swatch { background:#2ecc71; }
+    .alt-swatch { background:#84cc16; }
+    .none-swatch { background:#14532d; }
 
     @media (max-width: 900px) {
-      body {
-        height: auto;
-      }
       .layout {
         grid-template-columns: 1fr;
         grid-template-rows: 1.3fr 1.2fr;
-        height: 100vh;
-      }
-      .sidebar {
-        border-left: none;
-        border-top: 1px solid rgba(46, 204, 113, 0.4);
       }
     }
   </style>
 </head>
 <body>
-  <div class="layout">
-    <div id="map"></div>
-    <aside class="sidebar">
-      <div>
-        <h1>Global Wealth Taxes Explorer</h1>
-        <p style="font-size:0.9rem; margin-top:0.35rem;">
-          Click a country to see whether it has a net wealth tax and how it is designed.
-        </p>
 
-        <div class="legend">
-          <span class="legend-item">
-            <span class="legend-swatch net"></span> Net wealth tax
-          </span>
-          <span class="legend-item">
-            <span class="legend-swatch alt"></span> Asset-based / alternatives
-          </span>
-          <span class="legend-item">
-            <span class="legend-swatch none"></span> No net wealth tax
-          </span>
-        </div>
-      </div>
+<div class="layout">
+  <div id="map"></div>
 
-      <div id="info-card" class="card">
-        <div>
-          <div class="card-section-title">Country</div>
-          <h2 id="country-name">United Kingdom</h2>
-        </div>
-        <div id="summary-text">
-          The UK does not have a broad annual net wealth tax.
-        </div>
-      </div>
-    </aside>
-  </div>
+  <aside class="sidebar">
+    <h1>Global Wealth Taxes Explorer</h1>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <div class="legend">
+      <span><div class="swatch net-swatch"></div> Net wealth tax</span>
+      <span><div class="swatch alt-swatch"></div> Asset-based</span>
+      <span><div class="swatch none-swatch"></div> No net wealth tax</span>
+    </div>
 
-  <script>
-    const map = L.map("map", {
-      zoomControl: true,
-      minZoom: 1.3,
-      worldCopyJump: true
-    }).setView([20, 0], 2);
+    <div id="info-card" class="card">
+      <h2 id="country-name">United Kingdom</h2>
 
-    L.tileLayer(
-      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {
-        maxZoom: 19,
-        attribution: "&copy; OpenStreetMap"
-      }
-    ).addTo(map);
+      <div id="status-pills" class="pill-row"></div>
 
-    function style() {
-      return {
-        fillColor: "#14532d",
-        weight: 0.7,
-        opacity: 1,
-        color: "#064e3b",
-        fillOpacity: 0.75
-      };
-    }
+      <div class="card-section-title">Summary</div>
+      <p id="summary-text">
+        The UK does not have a broad annual net wealth tax.
+      </p>
 
-    fetch("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json")
-      .then(res => res.json())
-      .then(data => {
-        L.geoJSON(data, { style }).addTo(map);
-      });
-  </script>
+      <div class="card-section-title">Design</div>
+      <p id="design-text">–</p>
+
+      <div class="card-section-title">Alternatives</div>
+      <p id="alternatives-text">–</p>
+    </div>
+  </aside>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+/* ========= COUNTRY DATA ========= */
+
+const wealthTaxByCountry = {
+  "United Kingdom": {
+    status: "none",
+    summary: "The UK does not have an annual net wealth tax.",
+    design: "Wealth is taxed through property tax, capital gains tax, and inheritance tax.",
+    alternatives: "Council Tax, CGT, Inheritance Tax."
+  },
+  Switzerland: {
+    status: "net",
+    summary: "Cantonal net wealth tax on worldwide assets.",
+    design: "Progressive rates typically 0.1%–1%.",
+    alternatives: "Relatively low capital gains taxes."
+  },
+  Norway: {
+    status: "net",
+    summary: "National and municipal net wealth tax above threshold.",
+    design: "Combined rate approx. 0.85%.",
+    alternatives: "No inheritance tax."
+  },
+  Spain: {
+    status: "net",
+    summary: "Progressive net wealth tax above €700k.",
+    design: "Rates vary by region up to ~3%.",
+    alternatives: "Inheritance and capital gains taxes."
+  },
+  France: {
+    status: "alt",
+    summary: "Replaced wealth tax with real-estate wealth tax (IFI).",
+    design: "Applies to property only.",
+    alternatives: "Inheritance and capital gains taxes."
+  }
+};
+
+/* ========= MAP SETUP ========= */
+
+const map = L.map("map", {
+  zoomControl: true,
+  minZoom: 1.3
+}).setView([20, 0], 2);
+
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  { maxZoom: 19 }
+).addTo(map);
+
+let geojsonLayer;
+
+function getColor(status) {
+  if (status === "net") return "#2ecc71";
+  if (status === "alt") return "#84cc16";
+  return "#14532d";
+}
+
+function style(feature) {
+  const country = wealthTaxByCountry[feature.properties.name];
+  const status = country ? country.status : "none";
+
+  return {
+    fillColor: getColor(status),
+    weight: 0.7,
+    color: "#064e3b",
+    fillOpacity: 0.75
+  };
+}
+
+function highlightFeature(e) {
+  e.target.setStyle({
+    weight: 2,
+    color: "#ffffff",
+    fillOpacity: 0.9
+  });
+}
+
+function resetHighlight(e) {
+  geojsonLayer.resetStyle(e.target);
+}
+
+function updatePanel(name) {
+  const data = wealthTaxByCountry[name];
+
+  document.getElementById("country-name").textContent = name;
+  const pills = document.getElementById("status-pills");
+  pills.innerHTML = "";
+
+  if (!data) {
+    pills.innerHTML = `<span class="pill none">No data</span>`;
+    document.getElementById("summary-text").textContent = "No information added yet.";
+    document.getElementById("design-text").textContent = "–";
+    document.getElementById("alternatives-text").textContent = "–";
+    return;
+  }
+
+  pills.innerHTML = `<span class="pill ${data.status}">${data.status.toUpperCase()}</span>`;
+  document.getElementById("summary-text").textContent = data.summary;
+  document.getElementById("design-text").textContent = data.design;
+  document.getElementById("alternatives-text").textContent = data.alternatives;
+}
+
+function onEachFeature(feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight,
+    click: () => updatePanel(feature.properties.name)
+  });
+}
+
+fetch("https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json")
+  .then(res => res.json())
+  .then(data => {
+    geojsonLayer = L.geoJSON(data, {
+      style,
+      onEachFeature
+    }).addTo(map);
+  });
+
+updatePanel("United Kingdom");
+
+</script>
 </body>
 </html>
-
