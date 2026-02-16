@@ -1,278 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Wealth Inequality Explorer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<title>Wealth Inequality Explorer</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #062f1f, #0b3d2e);
+  color: #e6fff2;
+}
 
-    body {
-      min-height: 100vh;
-      background: #021b12;
-      color: #e6f5ec;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1.5rem;
-    }
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 40px;
+  background: rgba(0, 60, 40, 0.6);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+}
 
-    .app {
-      width: 100%;
-      max-width: 900px;
-      background: #06281c;
-      border-radius: 1.5rem;
-      border: 1px solid #1f5c43;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-      padding: 1.5rem;
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 1.5rem;
-    }
+h1 {
+  margin-top: 0;
+  font-size: 32px;
+}
 
-    header {
-      grid-column: 1 / -1;
-    }
+.subtitle {
+  color: #9ee6c8;
+  margin-bottom: 30px;
+}
 
-    header h1 {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #d1fae5;
-    }
+.button-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+}
 
-    header p {
-      margin-top: 0.4rem;
-      font-size: 0.9rem;
-      color: #9dd8b9;
-    }
+.button-group button {
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #134e3a;
+  color: #e6fff2;
+  transition: 0.3s;
+}
 
-    .toggle-row {
-      display: inline-flex;
-      padding: 0.25rem;
-      border-radius: 999px;
-      background: #021b12;
-      border: 1px solid #1f5c43;
-    }
+.button-group button.active {
+  background-color: #2ecc71;
+  color: #062f1f;
+}
 
-    .toggle-btn {
-      border: none;
-      background: transparent;
-      color: #9dd8b9;
-      font-size: 0.85rem;
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+.slider-container {
+  margin-bottom: 30px;
+}
 
-    .toggle-btn.active {
-      background: #22c55e;
-      color: #021b12;
-      font-weight: 600;
-    }
+input[type="range"] {
+  width: 100%;
+  accent-color: #2ecc71;
+}
 
-    .slider-block {
-      margin-top: 1rem;
-    }
+.labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-top: 5px;
+  color: #9ee6c8;
+}
 
-    .slider-label-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: #9dd8b9;
-      margin-bottom: 0.4rem;
-    }
+.result-box {
+  background: rgba(0, 80, 55, 0.6);
+  padding: 25px;
+  border-radius: 15px;
+  margin-top: 20px;
+}
 
-    input[type="range"] {
-      width: 100%;
-      height: 6px;
-      border-radius: 999px;
-      background: #134e3a;
-      outline: none;
-    }
+.result-box h2 {
+  margin: 0;
+  font-size: 48px;
+  color: #2ecc71;
+}
 
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #4ade80;
-      cursor: pointer;
-      border: 2px solid #06281c;
-    }
-
-    .bar-wrapper {
-      background: #021b12;
-      border-radius: 1rem;
-      border: 1px solid #1f5c43;
-      padding: 0.6rem;
-    }
-
-    .bar-track {
-      width: 100%;
-      height: 18px;
-      border-radius: 999px;
-      background: #134e3a;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #22c55e, #86efac);
-      width: 0%;
-      transition: width 0.25s ease-out;
-    }
-
-    .stat-box {
-      border-radius: 1rem;
-      border: 1px solid #1f5c43;
-      padding: 1rem;
-      background: #021b12;
-      margin-top: 1rem;
-    }
-
-    .stat-main-number {
-      font-size: 1.8rem;
-      font-weight: 600;
-      color: #bbf7d0;
-    }
-
-    .stat-main-label {
-      margin-top: 0.3rem;
-      font-size: 0.9rem;
-      color: #e6f5ec;
-    }
-
-    .stat-note {
-      margin-top: 0.6rem;
-      font-size: 0.8rem;
-      color: #9dd8b9;
-    }
-
-    @media (max-width: 900px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+.result-box p {
+  margin-top: 10px;
+  font-size: 18px;
+}
+</style>
 </head>
+
 <body>
-  <main class="app">
-    <header>
-      <h1>Wealth Inequality Explorer (2024)</h1>
-      <p>Data: World Inequality Database, 2024 estimates.</p>
-    </header>
 
-    <section>
-      <div class="toggle-row">
-        <button id="btn-uk" class="toggle-btn active">United Kingdom</button>
-        <button id="btn-world" class="toggle-btn">World</button>
-      </div>
+<div class="container">
+  <h1>Wealth Inequality Explorer (2024)</h1>
+  <div class="subtitle">Data: World Inequality Database, 2024 estimates</div>
 
-      <div class="slider-block">
-        <div class="slider-label-row">
-          <span>Group</span>
-          <span id="group-label">Top 10%</span>
-        </div>
-        <input id="group-slider" type="range" min="0" max="2" step="1" value="1" />
-        <div class="slider-label-row">
-          <span>Top 1%</span>
-          <span>Top 10%</span>
-          <span>Bottom 50%</span>
-        </div>
-      </div>
+  <div class="button-group">
+    <button id="ukBtn" class="active">United Kingdom</button>
+    <button id="worldBtn">World</button>
+  </div>
 
-      <div class="stat-box">
-        <div id="stat-main-number" class="stat-main-number">57.17%</div>
-        <div id="stat-main-label" class="stat-main-label"></div>
-        <div id="stat-note" class="stat-note"></div>
-      </div>
-    </section>
+  <div class="slider-container">
+    <input type="range" id="groupSlider" min="0" max="2" step="1" value="0">
+    <div class="labels">
+      <span>Top 1%</span>
+      <span>Top 10%</span>
+      <span>Bottom 50%</span>
+    </div>
+  </div>
 
-    <section>
-        </div>
-      </div>
-    </section>
-  </main>
+  <div class="result-box">
+    <h2 id="percentage">21.3%</h2>
+    <p id="description">
+      21.3% of total wealth is held by the Top 1% in the UK.
+    </p>
+  </div>
 
-  <script>
-    const data = {
-      uk: { top1: 21.3, top10: 57.17, bottom50: 4.6 },
-      world: { top1: 36.4, top10: 74, bottom50: 2.3 }
-    };
+</div>
 
-    const groups = [
-      { key: "top1", label: "Top 1%" },
-      { key: "top10", label: "Top 10%" },
-      { key: "bottom50", label: "Bottom 50%" }
-    ];
+<script>
 
-    let currentRegion = "uk";
-    let currentGroupIndex = 1;
+const data = {
+  uk: [21.3, 57.17, 4.6],
+  world: [36.4, 74, 2.3]
+};
 
-    const btnUk = document.getElementById("btn-uk");
-    const btnWorld = document.getElementById("btn-world");
-    const slider = document.getElementById("group-slider");
-    const groupLabel = document.getElementById("group-label");
-    const barFill = document.getElementById("bar-fill");
-    const statMainNumber = document.getElementById("stat-main-number");
-    const statMainLabel = document.getElementById("stat-main-label");
-    const statNote = document.getElementById("stat-note");
+let currentRegion = "uk";
 
-    function updateToggle() {
-      btnUk.classList.toggle("active", currentRegion === "uk");
-      btnWorld.classList.toggle("active", currentRegion === "world");
-    }
+const percentageEl = document.getElementById("percentage");
+const descriptionEl = document.getElementById("description");
+const slider = document.getElementById("groupSlider");
+const ukBtn = document.getElementById("ukBtn");
+const worldBtn = document.getElementById("worldBtn");
 
-    function updateDisplay() {
-      const group = groups[currentGroupIndex];
-      const share = data[currentRegion][group.key];
+function updateDisplay() {
+  const index = slider.value;
+  const value = data[currentRegion][index];
+  
+  const groups = ["Top 1%", "Top 10%", "Bottom 50%"];
+  const regionName = currentRegion === "uk" ? "the UK" : "the World";
 
-      groupLabel.textContent = group.label;
-      barFill.style.width = share + "%";
-      statMainNumber.textContent = share + "%";
+  percentageEl.textContent = value + "%";
+  descriptionEl.textContent =
+    value + "% of total wealth is held by the " +
+    groups[index] + " in " + regionName + ".";
+}
 
-      statMainLabel.textContent =
-        share + "% of total wealth is held by the " +
-        group.label +
-        " in " +
-        (currentRegion === "uk" ? "the UK" : "the world") +
-        ".";
+slider.addEventListener("input", updateDisplay);
 
-      statNote.textContent =
-        "The remaining " +
-        (100 - share).toFixed(2) +
-        "% is shared by the rest of the population.";
-    }
+ukBtn.addEventListener("click", function() {
+  currentRegion = "uk";
+  ukBtn.classList.add("active");
+  worldBtn.classList.remove("active");
+  updateDisplay();
+});
 
-    btnUk.onclick = () => {
-      currentRegion = "uk";
-      updateToggle();
-      updateDisplay();
-    };
+worldBtn.addEventListener("click", function() {
+  currentRegion = "world";
+  worldBtn.classList.add("active");
+  ukBtn.classList.remove("active");
+  updateDisplay();
+});
 
-    btnWorld.onclick = () => {
-      currentRegion = "world";
-      updateToggle();
-      updateDisplay();
-    };
+updateDisplay();
 
-    slider.oninput = (e) => {
-      currentGroupIndex = parseInt(e.target.value);
-      updateDisplay();
-    };
+</script>
 
-    updateToggle();
-    updateDisplay();
-  </script>
 </body>
 </html>
 
