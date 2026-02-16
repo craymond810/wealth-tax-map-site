@@ -10,14 +10,13 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at top, #020617, #0b1120 55%, #020617);
-      color: #e5e7eb;
+      background: #021b12;
+      color: #e6f5ec;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -27,13 +26,13 @@
     .app {
       width: 100%;
       max-width: 900px;
-      background: rgba(15, 23, 42, 0.94);
+      background: #06281c;
       border-radius: 1.5rem;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      box-shadow: 0 24px 50px rgba(15, 23, 42, 0.8);
+      border: 1px solid #1f5c43;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
       padding: 1.5rem;
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      grid-template-columns: 1.1fr 1fr;
       gap: 1.5rem;
     }
 
@@ -44,192 +43,123 @@
     header h1 {
       font-size: 1.4rem;
       font-weight: 600;
-      color: #f9fafb;
+      color: #d1fae5;
     }
 
     header p {
-      margin-top: 0.35rem;
+      margin-top: 0.4rem;
       font-size: 0.9rem;
-      color: #9ca3af;
-    }
-
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
+      color: #9dd8b9;
     }
 
     .toggle-row {
       display: inline-flex;
       padding: 0.25rem;
       border-radius: 999px;
-      background: radial-gradient(circle at top left, #020617, #0b1120);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      width: fit-content;
+      background: #021b12;
+      border: 1px solid #1f5c43;
     }
 
     .toggle-btn {
       border: none;
       background: transparent;
-      color: #9ca3af;
+      color: #9dd8b9;
       font-size: 0.85rem;
       padding: 0.35rem 0.9rem;
       border-radius: 999px;
       cursor: pointer;
-      transition: all 0.16s ease-out;
+      transition: 0.2s;
     }
 
     .toggle-btn.active {
-      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
-      color: #f9fafb;
-      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4);
+      background: #22c55e;
+      color: #021b12;
+      font-weight: 600;
     }
 
     .slider-block {
-      margin-top: 0.4rem;
+      margin-top: 1rem;
     }
 
     .slider-label-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 0.3rem;
       font-size: 0.8rem;
-      color: #9ca3af;
-    }
-
-    .slider-display {
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #e5e7eb;
+      color: #9dd8b9;
+      margin-bottom: 0.4rem;
     }
 
     input[type="range"] {
       width: 100%;
-      -webkit-appearance: none;
-      appearance: none;
       height: 6px;
       border-radius: 999px;
-      background: #1f2937;
+      background: #134e3a;
       outline: none;
     }
 
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #60a5fa;
-      border: 2px solid #0b1120;
-      cursor: pointer;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.35);
-    }
-
-    input[type="range"]::-moz-range-thumb {
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background: #60a5fa;
-      border: 2px solid #0b1120;
+      background: #4ade80;
       cursor: pointer;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.35);
-    }
-
-    .explanation {
-      font-size: 0.9rem;
-      color: #e5e7eb;
-      margin-top: 0.7rem;
-      line-height: 1.5;
-    }
-
-    .meta {
-      margin-top: 0.5rem;
-      font-size: 0.75rem;
-      color: #9ca3af;
-    }
-
-    .viz {
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem;
+      border: 2px solid #06281c;
     }
 
     .bar-wrapper {
-      background: #020617;
-      border-radius: 999px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      padding: 0.4rem;
+      background: #021b12;
+      border-radius: 1rem;
+      border: 1px solid #1f5c43;
+      padding: 0.6rem;
     }
 
     .bar-track {
       width: 100%;
-      height: 20px;
+      height: 18px;
       border-radius: 999px;
-      background: linear-gradient(to right, #0f172a, #020617);
+      background: #134e3a;
       overflow: hidden;
       position: relative;
     }
 
     .bar-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
       height: 100%;
       border-radius: 999px;
-      background: linear-gradient(90deg, #22c55e, #a3e635);
+      background: linear-gradient(90deg, #22c55e, #86efac);
       width: 0%;
       transition: width 0.25s ease-out;
     }
 
-    .bar-labels {
-      margin-top: 0.35rem;
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      color: #9ca3af;
-    }
-
     .stat-box {
       border-radius: 1rem;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      padding: 0.8rem;
-      background: radial-gradient(circle at top right, #111827, #020617);
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap: 0.5rem;
-      align-items: center;
+      border: 1px solid #1f5c43;
+      padding: 1rem;
+      background: #021b12;
+      margin-top: 1rem;
     }
 
     .stat-main-number {
       font-size: 1.8rem;
       font-weight: 600;
-      color: #f9fafb;
+      color: #bbf7d0;
     }
 
     .stat-main-label {
+      margin-top: 0.3rem;
       font-size: 0.9rem;
-      color: #e5e7eb;
+      color: #e6f5ec;
     }
 
     .stat-note {
+      margin-top: 0.6rem;
       font-size: 0.8rem;
-      color: #9ca3af;
-    }
-
-    .stat-compare {
-      font-size: 0.8rem;
-      color: #9ca3af;
+      color: #9dd8b9;
     }
 
     @media (max-width: 900px) {
-      body {
-        padding: 1rem;
-      }
       .app {
-        grid-template-columns: minmax(0, 1fr);
-      }
-      .stat-box {
-        grid-template-columns: minmax(0, 1fr);
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -237,38 +167,22 @@
 <body>
   <main class="app">
     <header>
-      <h1>Wealth Inequality Explorer</h1>
-      <p>
-        See how much of total wealth is held by different parts of the population.
-        Switch between UK and global data to compare.
-      </p>
+      <h1>Wealth Inequality Explorer (2024)</h1>
+      <p>Data: World Inequality Database, 2024 estimates.</p>
     </header>
 
-    <section class="controls">
-      <div>
-        <div class="toggle-row">
-          <button id="btn-uk" class="toggle-btn active">United Kingdom</button>
-          <button id="btn-world" class="toggle-btn">World</button>
-        </div>
-        <p class="meta" style="margin-top:0.5rem;">
-          Uses approximate recent estimates (top 1%, top 10% and bottom 50% shares of
-          total wealth).
-        </p>
+    <section>
+      <div class="toggle-row">
+        <button id="btn-uk" class="toggle-btn active">United Kingdom</button>
+        <button id="btn-world" class="toggle-btn">World</button>
       </div>
 
       <div class="slider-block">
         <div class="slider-label-row">
-          <span>Group selected</span>
-          <span id="group-label" class="slider-display">Top 10%</span>
+          <span>Group</span>
+          <span id="group-label">Top 10%</span>
         </div>
-        <input
-          id="group-slider"
-          type="range"
-          min="0"
-          max="2"
-          step="1"
-          value="1"
-        />
+        <input id="group-slider" type="range" min="0" max="2" step="1" value="1" />
         <div class="slider-label-row">
           <span>Top 1%</span>
           <span>Top 10%</span>
@@ -276,190 +190,92 @@
         </div>
       </div>
 
-      <p id="explanation" class="explanation">
-        In the UK, the richest 10% of people own around 43% of total wealth, while the
-        bottom 50% own only 9%. Wealth is much more concentrated than income.
-      </p>
-
-      <p class="meta">
-        These numbers are rounded, teaching-oriented values based on work by the ONS,
-        World Inequality Lab and partners. Exact shares differ slightly across sources
-        and years.
-      </p>
+      <div class="stat-box">
+        <div id="stat-main-number" class="stat-main-number">57.17%</div>
+        <div id="stat-main-label" class="stat-main-label"></div>
+        <div id="stat-note" class="stat-note"></div>
+      </div>
     </section>
 
-    <section class="viz">
+    <section>
       <div class="bar-wrapper">
         <div class="bar-track">
           <div id="bar-fill" class="bar-fill"></div>
-        </div>
-        <div class="bar-labels">
-          <span id="bar-left-label">0% of total wealth</span>
-          <span id="bar-right-label">100% of total wealth</span>
-        </div>
-      </div>
-
-      <div class="stat-box">
-        <div>
-          <div id="stat-main-number" class="stat-main-number">43%</div>
-          <div id="stat-main-label" class="stat-main-label">
-            of all wealth is held by the top 10% (UK)
-          </div>
-        </div>
-        <div>
-          <div id="stat-note" class="stat-note">
-            That means the remaining 90% of people share the other 57% of wealth.
-          </div>
-          <div id="stat-compare" class="stat-compare" style="margin-top:0.25rem;">
-            Try switching to “World” to see how global inequality compares.
-          </div>
         </div>
       </div>
     </section>
   </main>
 
   <script>
-    // Approximate wealth shares (%) – simple teaching values
-    // UK estimates loosely based on WID / JRF summaries
-    // World estimates loosely based on World Inequality / UBS data
     const data = {
-      uk: {
-        top1: { share: 10 },
-        top10: { share: 43 },
-        bottom50: { share: 9 }
-      },
-      world: {
-        top1: { share: 44 },
-        top10: { share: 76 },
-        bottom50: { share: 2 }
-      }
+      uk: { top1: 21.3, top10: 57.17, bottom50: 4.6 },
+      world: { top1: 36.4, top10: 74, bottom50: 2.3 }
     };
 
-    const groupOptions = [
+    const groups = [
       { key: "top1", label: "Top 1%" },
       { key: "top10", label: "Top 10%" },
       { key: "bottom50", label: "Bottom 50%" }
     ];
 
     let currentRegion = "uk";
-    let currentGroupIndex = 1; // start with top 10%
+    let currentGroupIndex = 1;
 
     const btnUk = document.getElementById("btn-uk");
     const btnWorld = document.getElementById("btn-world");
     const slider = document.getElementById("group-slider");
     const groupLabel = document.getElementById("group-label");
-    const explanation = document.getElementById("explanation");
     const barFill = document.getElementById("bar-fill");
-    const barLeftLabel = document.getElementById("bar-left-label");
-    const barRightLabel = document.getElementById("bar-right-label");
     const statMainNumber = document.getElementById("stat-main-number");
     const statMainLabel = document.getElementById("stat-main-label");
     const statNote = document.getElementById("stat-note");
-    const statCompare = document.getElementById("stat-compare");
 
-    function updateToggleButtons() {
+    function updateToggle() {
       btnUk.classList.toggle("active", currentRegion === "uk");
       btnWorld.classList.toggle("active", currentRegion === "world");
     }
 
-    function formatRegionName(region) {
-      return region === "uk" ? "the UK" : "the world";
-    }
-
     function updateDisplay() {
-      const group = groupOptions[currentGroupIndex];
-      const regionData = data[currentRegion][group.key];
-      const share = regionData.share;
+      const group = groups[currentGroupIndex];
+      const share = data[currentRegion][group.key];
 
       groupLabel.textContent = group.label;
-
-      // Update bar
       barFill.style.width = share + "%";
-      barLeftLabel.textContent = `${share}% of total wealth held by ${group.label.toLowerCase()}`;
-      barRightLabel.textContent = "100% of total wealth";
-
-      // Main stat
       statMainNumber.textContent = share + "%";
 
-      let groupDescription = "";
-      if (group.key === "top1") {
-        groupDescription = `of all wealth is held by the richest 1% in ${formatRegionName(
-          currentRegion
-        )}.`;
-      } else if (group.key === "top10") {
-        groupDescription = `of all wealth is held by the richest 10% in ${formatRegionName(
-          currentRegion
-        )}.`;
-      } else {
-        groupDescription = `of all wealth is owned by the bottom 50% in ${formatRegionName(
-          currentRegion
-        )}.`;
-      }
-      statMainLabel.textContent = groupDescription;
+      statMainLabel.textContent =
+        share + "% of total wealth is held by the " +
+        group.label +
+        " in " +
+        (currentRegion === "uk" ? "the UK" : "the world") +
+        ".";
 
-      const remaining = 100 - share;
-      if (group.key === "bottom50") {
-        statNote.textContent = `That means the other half of the population owns about ${remaining}% of wealth.`;
-      } else {
-        statNote.textContent = `That means the remaining ${
-          group.key === "top1" ? "99%" : "90%"
-        } of people share the other ${remaining}% of wealth.`;
-      }
-
-      // Explanation paragraph
-      if (currentRegion === "uk") {
-        if (group.key === "top10") {
-          explanation.textContent =
-            "In the UK, estimates suggest that the richest 10% of people own around 57% of all wealth. That leaves just over 40% of wealth for the other 90% of the population.";
-        } else if (group.key === "top1") {
-          explanation.textContent =
-            "For the UK, the top 1% alone are estimated to hold more than a fifth of total wealth. This reflects the importance of very large fortunes, often built up over time and sometimes passed between generations.";
-        } else {
-          explanation.textContent =
-            "The bottom 50% of the UK population own only a small sliver of overall wealth, even though they make up half the people. This gap between bottom and top is part of the motivation for proposals to tax wealth more heavily.";
-        }
-      } else {
-        // world
-        if (group.key === "top10") {
-          explanation.textContent =
-            "Globally, wealth is extremely concentrated: around three-quarters of all private wealth is held by the top 10% of adults. This leaves a relatively small share for the remaining 90%.";
-        } else if (group.key === "top1") {
-          explanation.textContent =
-            "Worldwide, the richest 1% of adults are estimated to hold well over 40% of all private wealth. When thinking about a global wealth tax, this group is the main target.";
-        } else {
-          explanation.textContent =
-            "The bottom half of the world’s population own only a few percent of global wealth. Many have little or no assets at all. Debates about global wealth taxes often emphasise how little wealth is available to the poorer half.";
-        }
-      }
-
-      statCompare.textContent =
-        currentRegion === "uk"
-          ? "Switch to “World” to see how the global picture compares to the UK."
-          : "Switch back to “United Kingdom” to compare global inequality with the UK.";
+      statNote.textContent =
+        "The remaining " +
+        (100 - share).toFixed(2) +
+        "% is shared by the rest of the population.";
     }
 
-    btnUk.addEventListener("click", () => {
+    btnUk.onclick = () => {
       currentRegion = "uk";
-      updateToggleButtons();
+      updateToggle();
       updateDisplay();
-    });
+    };
 
-    btnWorld.addEventListener("click", () => {
+    btnWorld.onclick = () => {
       currentRegion = "world";
-      updateToggleButtons();
+      updateToggle();
       updateDisplay();
-    });
+    };
 
-    slider.addEventListener("input", (e) => {
-      currentGroupIndex = parseInt(e.target.value, 10);
+    slider.oninput = (e) => {
+      currentGroupIndex = parseInt(e.target.value);
       updateDisplay();
-    });
+    };
 
-    // Initial render
-    updateToggleButtons();
+    updateToggle();
     updateDisplay();
   </script>
 </body>
 </html>
-
 
