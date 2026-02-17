@@ -1,10 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wealth Tax Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
 <div class="app">
   <header>
     <h1>Who Would Pay a Wealth Tax?</h1>
-    <p class="sub">Adjust thresholds and rates to assess who would be affected under different UK wealth tax designs.</p>
+    <p class="sub">
+      Adjust thresholds and rates to assess who would be affected under different UK wealth tax designs.
+    </p>
   </header>
 
   <div class="grid">
+
+    <!-- INPUTS -->
     <section class="card">
       <h2>Inputs</h2>
 
@@ -99,6 +113,7 @@
       <button id="reset">Reset</button>
     </section>
 
+    <!-- RESULTS -->
     <section class="card">
       <h2>Results</h2>
 
@@ -117,8 +132,13 @@
       <div class="row"><span>One-off tax due</span><strong id="tax_due_oneoff">£0</strong></div>
 
       <p class="note">
-        Note: Tax applies only to wealth above the selected threshold. This is a flat-rate illustrative model and does not account for exemptions, valuation issues, or behavioural responses.										
+        Note: Tax applies only to wealth above the selected threshold. This is a flat-rate illustrative model.
       </p>
     </section>
+
   </div>
 </div>
+
+<script src="script.js"></script>
+</body>
+</html>
