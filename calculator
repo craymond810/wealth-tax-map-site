@@ -1,0 +1,124 @@
+<div class="app">
+  <header>
+    <h1>Who Would Pay a Wealth Tax?</h1>
+    <p class="sub">Adjust thresholds and rates to assess who would be affected under different UK wealth tax designs.</p>
+  </header>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Inputs</h2>
+
+      <div class="group">
+        <div class="label">Assets</div>
+
+        <label>Property (£)
+          <input type="number" id="a_property" min="0" step="1000" placeholder="0">
+        </label>
+
+        <label>Financial assets (£)
+          <input type="number" id="a_financial" min="0" step="1000" placeholder="0">
+        </label>
+
+        <label>Business assets (£)
+          <input type="number" id="a_business" min="0" step="1000" placeholder="0">
+        </label>
+
+        <label>Pensions (£)
+          <input type="number" id="a_pensions" min="0" step="1000" placeholder="0">
+        </label>
+
+        <label>Other valuables (£)
+          <input type="number" id="a_other" min="0" step="1000" placeholder="0">
+        </label>
+      </div>
+
+      <div class="group">
+        <div class="label">Debts</div>
+
+        <label>Mortgage (£)
+          <input type="number" id="d_mortgage" min="0" step="1000" placeholder="0">
+        </label>
+
+        <label>Other debts (£)
+          <input type="number" id="d_other" min="0" step="1000" placeholder="0">
+        </label>
+      </div>
+
+      <div class="group two">
+        <div>
+          <div class="label">Annual tax</div>
+          <label>Threshold
+            <select id="t_annual">
+              <option value="0">£0</option>
+              <option value="250000">£250k</option>
+              <option value="500000">£500k</option>
+              <option value="1000000">£1m</option>
+              <option value="2000000" selected>£2m</option>
+              <option value="5000000">£5m</option>
+              <option value="10000000">£10m</option>
+            </select>
+          </label>
+
+          <label>Rate
+            <select id="r_annual">
+              <option value="0.01">1%</option>
+              <option value="0.02" selected>2%</option>
+              <option value="0.03">3%</option>
+              <option value="0.05">5%</option>
+              <option value="0.10">10%</option>
+            </select>
+          </label>
+        </div>
+
+        <div>
+          <div class="label">One-off tax</div>
+          <label>Threshold
+            <select id="t_oneoff">
+              <option value="0">£0</option>
+              <option value="250000" selected>£250k</option>
+              <option value="500000">£500k</option>
+              <option value="1000000">£1m</option>
+              <option value="2000000">£2m</option>
+              <option value="5000000">£5m</option>
+              <option value="10000000">£10m</option>
+            </select>
+          </label>
+
+          <label>Rate
+            <select id="r_oneoff">
+              <option value="0.01">1%</option>
+              <option value="0.02">2%</option>
+              <option value="0.03">3%</option>
+              <option value="0.05" selected>5%</option>
+              <option value="0.10">10%</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <button id="reset">Reset</button>
+    </section>
+
+    <section class="card">
+      <h2>Results</h2>
+
+      <div class="row"><span>Total assets</span><strong id="total_assets">£0</strong></div>
+      <div class="row"><span>Total debts</span><strong id="total_debts">£0</strong></div>
+      <div class="row"><span>Net wealth</span><strong id="net_wealth">£0</strong></div>
+
+      <hr>
+
+      <div class="row"><span>Annual taxable wealth</span><strong id="taxable_annual">£0</strong></div>
+      <div class="row"><span>Annual tax due</span><strong id="tax_due_annual">£0</strong></div>
+
+      <hr>
+
+      <div class="row"><span>One-off taxable wealth</span><strong id="taxable_oneoff">£0</strong></div>
+      <div class="row"><span>One-off tax due</span><strong id="tax_due_oneoff">£0</strong></div>
+
+      <p class="note">
+        Note: Tax applies only to wealth above the selected threshold. This is a flat-rate illustrative model and does not account for exemptions, valuation issues, or behavioural responses.										
+      </p>
+    </section>
+  </div>
+</div>
