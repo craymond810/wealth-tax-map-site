@@ -85,7 +85,7 @@
     }
 
     .pill.net { background:#2ecc71; color:#062f1f; }
-    .pill.previous { background:#84cc16; color:#062f1f; }
+    .pill.alt { background:#84cc16; color:#062f1f; }
     .pill.none { background:#14532d; color:#e6fff2; }
 
     .legend {
@@ -108,7 +108,7 @@
     }
 
     .net-swatch { background:#2ecc71; }
-    .previous-swatch { background:#84cc16; }
+    .alt-swatch { background:#84cc16; }
     .none-swatch { background:#14532d; }
 
     @media (max-width: 900px) {
@@ -129,7 +129,7 @@
 
     <div class="legend">
       <span><div class="swatch net-swatch"></div> Net wealth tax</span>
-      <span><div class="swatch previous-swatch"></div> Previous wealth tax</span>
+      <span><div class="swatch alt-swatch"></div> Asset-based</span>
       <span><div class="swatch none-swatch"></div> No net wealth tax</span>
     </div>
 
@@ -173,7 +173,7 @@ const wealthTaxByCountry = {
 
   },
   Sweden: {
-  status: "previous",
+  status: "alt",
   summary: "Sweden had a wealth tax until 2007.",
   design: "Rate of approximately 1.5% on net wealth.",
   alternatives: "Abolished due to capital flight and low revenue."
@@ -192,14 +192,14 @@ const wealthTaxByCountry = {
     alternatives: "Inheritance and capital gains taxes."
   },
   Germany: {
-  status: "previous",   // use "net", "alt", or "none"
+  status: "alt",   // use "net", "alt", or "none"
   summary: "Germany had a net wealth tax until 1997.",
   design: "Previously taxed net wealth at around 1%.",
   alternatives: "Abolished after constitutional court ruled valuation rules unequal."
 },
 
   France: {
-    status: "previous",
+    status: "alt",
     summary: "Replaced wealth tax with real-estate wealth tax (IFI).",
     design: "Applies to property only.",
     alternatives: "Inheritance and capital gains taxes."
@@ -222,7 +222,7 @@ let geojsonLayer;
 
 function getColor(status) {
   if (status === "net") return "#2ecc71";
-  if (status === "Previous") return "#84cc16";
+  if (status === "alt") return "#84cc16";
   return "#14532d";
 }
 
