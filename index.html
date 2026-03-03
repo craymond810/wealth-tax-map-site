@@ -12,15 +12,22 @@
     .sidebar { padding: 1.5rem; background: radial-gradient(circle at top left, #0f3f2f, #041f17); border-left: 1px solid rgba(46, 204, 113, 0.4); display: flex; flex-direction: column; gap: 1rem; }
     .sidebar h1 { font-size: 1.4rem; font-weight: 600; color: white; }
     .card { background: rgba(0, 50, 35, 0.85); border-radius: 1rem; padding: 1rem; border: 1px solid rgba(46, 204, 113, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.4); flex: 1; overflow-y: auto; }
-    .card-section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #86efac; margin-top: 1rem; }
+    .card h2 { font-size: 1.1rem; font-weight: 600; color: white; }
+    .card-section-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #86efac; margin-top: 1rem; margin-bottom: 0.3rem; }
+    .card p { font-size: 0.82rem; line-height: 1.5; color: #d1fae5; }
     .pill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0; }
     .pill { font-size: 0.7rem; padding: 0.25rem 0.6rem; border-radius: 999px; border: 1px solid rgba(46, 204, 113, 0.4); text-transform: uppercase; }
     .pill.net      { background:#2ecc71; color:#062f1f; }
     .pill.previous { background:#f59e0b; color:#1c0a00; }
     .pill.none     { background:#14532d; color:#e6fff2; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.4rem; }
+    .stat-box { background: rgba(0,0,0,0.25); border-radius: 0.5rem; padding: 0.5rem 0.6rem; border: 1px solid rgba(46,204,113,0.15); }
+    .stat-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: #86efac; margin-bottom: 0.2rem; }
+    .stat-value { font-size: 0.82rem; font-weight: 600; color: white; }
+    .callout { background: rgba(245,158,11,0.15); border-left: 3px solid #f59e0b; border-radius: 0 0.4rem 0.4rem 0; padding: 0.5rem 0.7rem; margin-top: 0.4rem; font-size: 0.78rem; color: #fde68a; line-height: 1.4; }
     .legend { font-size: 0.8rem; margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
     .legend span { display: flex; align-items: center; gap: 0.4rem; }
-    .swatch { width: 14px; height: 14px; border-radius: 50%; }
+    .swatch { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
     .net-swatch      { background:#2ecc71; }
     .previous-swatch { background:#f59e0b; }
     .none-swatch     { background:#14532d; }
@@ -40,6 +47,14 @@
     <div id="info-card" class="card">
       <h2 id="country-name">United Kingdom</h2>
       <div id="status-pills" class="pill-row"></div>
+      <div id="stats-section" style="display:none">
+        <div class="card-section-title">Key Statistics</div>
+        <div id="stats-grid" class="stats-grid"></div>
+      </div>
+      <div id="callout-section" style="display:none">
+        <div class="card-section-title">Notable</div>
+        <div id="callout-box" class="callout"></div>
+      </div>
       <div class="card-section-title">Summary</div>
       <p id="summary-text">The UK does not have a broad annual net wealth tax.</p>
       <div class="card-section-title">Design</div>
@@ -58,23 +73,44 @@ const wealthTaxByCountry = {
     design: "Wealth is taxed through property tax, capital gains tax, and inheritance tax.",
     alternatives: "Council Tax, CGT, Inheritance Tax."
   },
-  Switzerland: {
-    status: "net",
-    summary: "Cantonal net wealth tax on worldwide assets of residents.",
-    design: "Progressive rates usually under 1%, set at the cantonal level rather than nationally.",
-    alternatives: "Relatively low capital gains taxes on private individuals."
-  },
   Norway: {
     status: "net",
-    summary: "A long-standing national net wealth tax shared between local and central government.",
-    design: "Combined national and municipal rate of approximately 1.1% on total net wealth.",
-    alternatives: "No inheritance tax since 2014."
+    summary: "A long-standing national net wealth tax shared between local and central government, in place since 1892 — one of the world's longest-running wealth taxes.",
+    design: "Combined national and municipal rate of approximately 1.1% on total net wealth above a threshold. The top rate was raised from 0.85% to 1.1% in 2022.",
+    alternatives: "No inheritance tax since 2014.",
+    stats: [
+      { label: "Annual Revenue", value: "~15bn NOK" },
+      { label: "% of Tax Revenue", value: "~1.1%" },
+      { label: "% of GDP", value: "~0.4–0.6%" },
+      { label: "Taxpayers", value: "~671,000" }
+    ],
+    callout: "⚠️ Capital flight concern: over 30 billionaires and multimillionaires left Norway in 2022 alone after the rate rise — more than in the previous 13 years combined. Most relocated to Switzerland."
   },
   Spain: {
     status: "net",
-    summary: "Progressive net wealth tax above a 700k EUR exemption threshold.",
-    design: "Rates vary by region and can reach up to about 3.5% — higher for the very wealthy.",
-    alternatives: "Inheritance and capital gains taxes also apply."
+    summary: "Progressive net wealth tax above a €700k exemption threshold. In 2023, around 192,000 taxpayers declared nearly €934 billion in total wealth.",
+    design: "Rates vary by region and can reach up to about 3.5% for the very wealthy. A central solidarity tax on large fortunes was introduced in 2022, prompting regions like Madrid and Andalucía — which had previously abolished their regional wealth tax — to reinstate it to retain revenue locally.",
+    alternatives: "Inheritance and capital gains taxes also apply.",
+    stats: [
+      { label: "Annual Revenue", value: "~€1.98bn" },
+      { label: "Taxpayers (2023)", value: "~192,000" },
+      { label: "Wealth Declared", value: "~€934bn" },
+      { label: "Top Rate", value: "up to 3.5%" }
+    ],
+    callout: "📈 Revenue rose 58% in 2023 vs the prior year, driven by the new solidarity tax and regional reinstatements."
+  },
+  Switzerland: {
+    status: "net",
+    summary: "Cantonal net wealth tax on worldwide assets of residents. Switzerland generates the highest wealth tax revenue share of any country in the world.",
+    design: "Progressive rates usually under 1%, set at the cantonal level rather than nationally. Wealth is self-reported with no mandatory third-party bank reporting, creating significant scope for under-reporting. Taxable assets include real estate, savings, investments and cryptocurrencies.",
+    alternatives: "Relatively low capital gains taxes on private individuals. In November 2025, Swiss voters rejected a proposal to introduce a 50% inheritance tax on gifts above 50 million CHF.",
+    stats: [
+      { label: "% of Tax Revenue", value: "~5.6%" },
+      { label: "Top 5% share", value: "87% of revenue" },
+      { label: "Bottom 50%", value: "pay nothing" },
+      { label: "Rate", value: "typically <1%" }
+    ],
+    callout: "🏦 Half of all Swiss taxpayers have a positive net worth but pay no wealth tax at all — the burden is highly concentrated at the top."
   },
   Colombia: {
     status: "net",
@@ -88,7 +124,25 @@ const wealthTaxByCountry = {
     design: "Rates range from approximately 0.5% to 1.75% on total net wealth.",
     alternatives: "Inheritance and income taxes also apply."
   },
+  Uruguay: {
+    status: "net",
+    summary: "Uruguay levies an annual net wealth tax on individuals and companies.",
+    design: "Progressive rates apply to net assets, with individuals paying up to about 0.7% and companies at a flat 1.5%.",
+    alternatives: "Income tax and VAT are the primary revenue sources."
+  },
+  Italy: {
+    status: "net",
+    summary: "Italy taxes wealth held abroad through IVAFE (tax on foreign financial assets) and IVIE (tax on foreign real estate).",
+    design: "IVAFE applies at 0.2% on foreign financial assets; IVIE at 0.76% on foreign property. Domestic assets are not subject to a general wealth tax.",
+    alternatives: "Income, property, and inheritance taxes apply to domestic assets."
+  },
   // --- PREVIOUSLY TAXED ---
+  Bolivia: {
+    status: "previous",
+    summary: "Bolivia introduced a progressive wealth tax in 2020. President Rodrigo Paz proposed repealing it in November 2025, arguing it had discouraged investment. Note: repeal has been proposed but not yet formally passed into law.",
+    design: "Applied to net assets above approximately $4.3 million USD, with rates rising up to 2.4% for the wealthiest.",
+    alternatives: "Income and property taxes also apply."
+  },
   Sweden: {
     status: "previous",
     summary: "Sweden scrapped its net wealth tax in 2007.",
@@ -139,8 +193,8 @@ const wealthTaxByCountry = {
   },
   Luxembourg: {
     status: "previous",
-    summary: "Luxembourg scrapped its personal net wealth tax in 2006.",
-    design: "A corporate net wealth tax (NWT) on companies still remains in place.",
+    summary: "Luxembourg scrapped its personal net wealth tax in 2006. A corporate net wealth tax on companies still remains.",
+    design: "The personal tax was abolished as part of broader reforms; the corporate NWT continues.",
     alternatives: "Income and inheritance taxes continue to apply to individuals."
   },
   Finland: {
@@ -149,16 +203,16 @@ const wealthTaxByCountry = {
     design: "Had applied to net assets above a threshold at a flat rate of around 0.8%.",
     alternatives: "Abolished as part of a broader capital tax reform package."
   },
-  Bolivia: {
+  Japan: {
     status: "previous",
-    summary: "Bolivia introduced a progressive wealth tax in 2020 but President Rodrigo Paz proposed repealing it in November 2025, arguing it had discouraged investment. Note: repeal has been proposed but not yet formally passed into law.",
-    design: "Applied to net assets above approximately $4.3 million USD, with rates rising up to 2.4% for the wealthiest.",
-    alternatives: "Income and property taxes also apply."
+    summary: "Japan had a net wealth tax briefly after World War II, abolished in 1953.",
+    design: "Introduced under the post-war Shoup tax mission. Abolished due to valuation difficulty, widespread evasion, and low yield.",
+    alternatives: "Japan has one of the world's steepest inheritance taxes, with a top rate of 55%."
   },
   Canada: {
     status: "none",
-    summary: "Canada has never enacted a federal net wealth tax. The NDP proposed a 1% annual tax on wealth above $10 million CAD but it did not pass. No formal wealth tax has ever been legislated at the national level.",
-    design: "Wealth-adjacent provincial levies existed historically but nothing qualifies as a net wealth tax in the modern sense.",
+    summary: "Canada has never enacted a federal net wealth tax. The NDP proposed a 1% annual tax on wealth above $10 million CAD but it did not pass.",
+    design: "No formal wealth tax has ever been legislated at the national level. Some wealth-adjacent provincial levies existed historically.",
     alternatives: "Wealth is taxed indirectly through capital gains tax (50% inclusion rate) and provincial property taxes."
   }
 };
@@ -187,18 +241,44 @@ function updatePanel(name) {
   document.getElementById("country-name").textContent = name;
   const pills = document.getElementById("status-pills");
   pills.innerHTML = "";
+
   if (!data) {
     pills.innerHTML = `<span class="pill none">No data</span>`;
     document.getElementById("summary-text").textContent = "No information added yet.";
     document.getElementById("design-text").textContent = "–";
     document.getElementById("alternatives-text").textContent = "–";
+    document.getElementById("stats-section").style.display = "none";
+    document.getElementById("callout-section").style.display = "none";
     return;
   }
+
   const labelMap = { net: "Net Wealth Tax", previous: "Previously Taxed", none: "No Wealth Tax" };
   pills.innerHTML = `<span class="pill ${data.status}">${labelMap[data.status]}</span>`;
   document.getElementById("summary-text").textContent = data.summary;
   document.getElementById("design-text").textContent = data.design;
   document.getElementById("alternatives-text").textContent = data.alternatives;
+
+  // Stats grid
+  const statsSection = document.getElementById("stats-section");
+  const statsGrid = document.getElementById("stats-grid");
+  if (data.stats && data.stats.length) {
+    statsGrid.innerHTML = data.stats.map(s =>
+      `<div class="stat-box"><div class="stat-label">${s.label}</div><div class="stat-value">${s.value}</div></div>`
+    ).join("");
+    statsSection.style.display = "block";
+  } else {
+    statsSection.style.display = "none";
+  }
+
+  // Callout
+  const calloutSection = document.getElementById("callout-section");
+  const calloutBox = document.getElementById("callout-box");
+  if (data.callout) {
+    calloutBox.textContent = data.callout;
+    calloutSection.style.display = "block";
+  } else {
+    calloutSection.style.display = "none";
+  }
 }
 
 function onEachFeature(feature, layer) {
