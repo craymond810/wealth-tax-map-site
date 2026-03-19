@@ -1,74 +1,329 @@
-HTML:
-<div class="calculator">
-  <h2>How Long Would It Take You to Buy a Home?</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Long Would It Take You to Buy a Home?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <label>Annual Salary (£)</label>
-  <input type="number" id="salary" placeholder="e.g. 30000">
+    :root {
+      --green-dark: #2d4a3e;
+      --green-mid: #3a5c4e;
+      --cream: #e8e4dc;
+      --cream-light: #f0ece4;
+      --burgundy: #7a2020;
+      --text-dark: #1a1a1a;
+      --text-mid: #444;
+      --border: #ccc8be;
+    }
 
-  <label>% of Salary You Can Save</label>
-  <input type="number" id="saveRate" placeholder="e.g. 10">
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
 
-  <label>House Price (£)</label>
-  <input type="number" id="housePrice" placeholder="e.g. 250000">
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      max-width: 520px;
+      width: 100%;
+      padding: 2.4rem 2.4rem 2rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    }
 
-  <label>Deposit Required (%)</label>
-  <input type="number" id="depositRate" value="10">
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.3;
+      margin-bottom: 1.8rem;
+    }
 
-  <button onclick="calculate()">Calculate</button>
+    .field {
+      margin-bottom: 1.3rem;
+    }
 
-  <div id="result"></div>
-</div>
-CSS:
-body {
-  font-family: Arial, sans-serif;
-}
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-mid);
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.01em;
+    }
 
-.calculator {
-  background: #f4f4f4;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 400px;
-}
+    input[type="number"] {
+      width: 100%;
+      border: none;
+      border-bottom: 1.5px solid var(--border);
+      background: transparent;
+      padding: 0.45rem 0;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 1rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+      -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type="number"]:focus { border-bottom-color: var(--green-dark); }
+    input[type="number"]::placeholder { color: #aaa; font-style: italic; }
 
-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-}
+    .range-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: 0.3rem;
+    }
 
-button {
-  background-color: #2f5d50;
-  color: white;
-  padding: 10px;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-}
+    input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1.5px var(--green-dark);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--green-dark);
+      border: 2px solid #fff;
+    }
 
-button:hover {
-  background-color: #24463c;
-}
+    .range-val {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--green-dark);
+      min-width: 2.6rem;
+      text-align: right;
+    }
 
-#result {
-  margin-top: 15px;
-  font-weight: bold;
-}
-JS:
-function calculate() {
-  let salary = document.getElementById("salary").value;
-  let saveRate = document.getElementById("saveRate").value / 100;
-  let housePrice = document.getElementById("housePrice").value;
-  let depositRate = document.getElementById("depositRate").value / 100;
+    button {
+      display: block;
+      width: 100%;
+      margin-top: 1.8rem;
+      padding: 0.8rem;
+      background: var(--green-dark);
+      color: #fff;
+      border: none;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: var(--green-mid); }
 
-  let deposit = housePrice * depositRate;
-  let annualSavings = salary * saveRate;
-  let years = deposit / annualSavings;
+    /* Result */
+    #result {
+      display: none;
+      margin-top: 1.6rem;
+      border-top: 1.5px solid var(--border);
+      padding-top: 1.4rem;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-  let oldRatio = 4; // Approx 1995 price-to-income ratio
-  let todayRatio = 8; // Approx 2023 ratio
+    .result-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      color: var(--green-dark);
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .result-sub {
+      font-size: 0.9rem;
+      color: var(--text-mid);
+      margin-bottom: 1.2rem;
+    }
 
-  document.getElementById("result").innerHTML =
-    "Deposit needed: £" + deposit.toFixed(0) +
-    "<br>Years to save today: " + years.toFixed(1) +
-    "<br><br>In 1995, it would have taken roughly half as long.";
-}
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem 1.2rem;
+    }
+    .result-item {
+      background: var(--cream-light);
+      padding: 0.75rem 0.9rem;
+    }
+    .result-item .val {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    .result-item .lbl {
+      font-size: 0.75rem;
+      color: var(--text-mid);
+      margin-top: 0.1rem;
+    }
+
+    .note {
+      margin-top: 1.1rem;
+      font-size: 0.78rem;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    .error {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.7rem 0.9rem;
+      background: #fdf0f0;
+      border-left: 3px solid var(--burgundy);
+      color: var(--burgundy);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>How Long Would It Take You to Buy a Home?</h1>
+
+    <div class="field">
+      <label for="salary">Annual Salary (£)</label>
+      <input type="number" id="salary" placeholder="e.g. 30000" min="1">
+    </div>
+
+    <div class="field">
+      <label>% of Salary You Can Save</label>
+      <div class="range-wrapper">
+        <input type="range" id="saveSlider" min="1" max="60" value="10" oninput="syncRange(this,'saveVal','saveInput')">
+        <span class="range-val" id="saveVal">10%</span>
+      </div>
+      <input type="number" id="saveInput" placeholder="or type here (1–60)" min="1" max="60" style="margin-top:0.5rem" oninput="syncInput(this,'saveSlider','saveVal','%')">
+    </div>
+
+    <div class="field">
+      <label for="price">House Price (£)</label>
+      <input type="number" id="price" placeholder="e.g. 250000" min="1">
+    </div>
+
+    <div class="field">
+      <label>Deposit Required (%)</label>
+      <div class="range-wrapper">
+        <input type="range" id="depositSlider" min="1" max="40" value="10" oninput="syncRange(this,'depositVal','depositInput')">
+        <span class="range-val" id="depositVal">10%</span>
+      </div>
+      <input type="number" id="depositInput" placeholder="or type here (1–40)" min="1" max="40" style="margin-top:0.5rem" oninput="syncInput(this,'depositSlider','depositVal','%')">
+    </div>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div class="error" id="error">Please fill in all fields with valid numbers.</div>
+
+    <div id="result">
+      <div class="result-headline" id="yearsDisplay"></div>
+      <div class="result-sub" id="subDisplay"></div>
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="val" id="depositAmt"></div>
+          <div class="lbl">Deposit needed</div>
+        </div>
+        <div class="result-item">
+          <div class="val" id="annualSaving"></div>
+          <div class="lbl">Saved per year</div>
+        </div>
+        <div class="result-item">
+          <div class="val" id="monthlySaving"></div>
+          <div class="lbl">Saved per month</div>
+        </div>
+        <div class="result-item">
+          <div class="val" id="mortgageAmt"></div>
+          <div class="lbl">Mortgage required</div>
+        </div>
+      </div>
+      <p class="note">This calculator assumes linear saving with no interest. It does not account for inflation, interest on savings, stamp duty, or other purchase costs.</p>
+    </div>
+  </div>
+
+  <script>
+    function syncRange(slider, valId, inputId) {
+      document.getElementById(valId).textContent = slider.value + '%';
+      document.getElementById(inputId).value = slider.value;
+    }
+
+    function syncInput(input, sliderId, valId, suffix) {
+      let v = Math.min(Math.max(parseInt(input.value) || 1, parseInt(input.min)), parseInt(input.max));
+      document.getElementById(sliderId).value = v;
+      document.getElementById(valId).textContent = v + suffix;
+    }
+
+    function fmt(n) {
+      return '£' + Math.round(n).toLocaleString('en-GB');
+    }
+
+    function calculate() {
+      const salary = parseFloat(document.getElementById('salary').value);
+      const savePct = parseFloat(document.getElementById('saveSlider').value);
+      const price = parseFloat(document.getElementById('price').value);
+      const depositPct = parseFloat(document.getElementById('depositSlider').value);
+
+      const errEl = document.getElementById('error');
+      const resEl = document.getElementById('result');
+
+      if (!salary || !price || salary <= 0 || price <= 0) {
+        errEl.style.display = 'block';
+        resEl.style.display = 'none';
+        return;
+      }
+      errEl.style.display = 'none';
+
+      const deposit = price * (depositPct / 100);
+      const annualSave = salary * (savePct / 100);
+      const months = deposit / (annualSave / 12);
+      const years = deposit / annualSave;
+      const wholeYears = Math.floor(years);
+      const remMonths = Math.round((years - wholeYears) * 12);
+
+      let headline, sub;
+      if (wholeYears === 0) {
+        headline = remMonths + (remMonths === 1 ? ' month' : ' months');
+        sub = 'to save your deposit';
+      } else if (remMonths === 0) {
+        headline = wholeYears + (wholeYears === 1 ? ' year' : ' years');
+        sub = 'to save your deposit';
+      } else {
+        headline = wholeYears + 'y ' + remMonths + 'm';
+        sub = 'to save your deposit';
+      }
+
+      document.getElementById('yearsDisplay').textContent = headline;
+      document.getElementById('subDisplay').textContent = sub;
+      document.getElementById('depositAmt').textContent = fmt(deposit);
+      document.getElementById('annualSaving').textContent = fmt(annualSave);
+      document.getElementById('monthlySaving').textContent = fmt(annualSave / 12);
+      document.getElementById('mortgageAmt').textContent = fmt(price - deposit);
+
+      resEl.style.display = 'block';
+      resEl.style.animation = 'none';
+      void resEl.offsetWidth;
+      resEl.style.animation = 'fadeIn 0.4s ease';
+    }
+
+    // Allow Enter key
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+  </script>
+</body>
+</html>
