@@ -1,0 +1,74 @@
+HTML:
+<div class="calculator">
+  <h2>How Long Would It Take You to Buy a Home?</h2>
+
+  <label>Annual Salary (£)</label>
+  <input type="number" id="salary" placeholder="e.g. 30000">
+
+  <label>% of Salary You Can Save</label>
+  <input type="number" id="saveRate" placeholder="e.g. 10">
+
+  <label>House Price (£)</label>
+  <input type="number" id="housePrice" placeholder="e.g. 250000">
+
+  <label>Deposit Required (%)</label>
+  <input type="number" id="depositRate" value="10">
+
+  <button onclick="calculate()">Calculate</button>
+
+  <div id="result"></div>
+</div>
+CSS:
+body {
+  font-family: Arial, sans-serif;
+}
+
+.calculator {
+  background: #f4f4f4;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+}
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #2f5d50;
+  color: white;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #24463c;
+}
+
+#result {
+  margin-top: 15px;
+  font-weight: bold;
+}
+JS:
+function calculate() {
+  let salary = document.getElementById("salary").value;
+  let saveRate = document.getElementById("saveRate").value / 100;
+  let housePrice = document.getElementById("housePrice").value;
+  let depositRate = document.getElementById("depositRate").value / 100;
+
+  let deposit = housePrice * depositRate;
+  let annualSavings = salary * saveRate;
+  let years = deposit / annualSavings;
+
+  let oldRatio = 4; // Approx 1995 price-to-income ratio
+  let todayRatio = 8; // Approx 2023 ratio
+
+  document.getElementById("result").innerHTML =
+    "Deposit needed: £" + deposit.toFixed(0) +
+    "<br>Years to save today: " + years.toFixed(1) +
+    "<br><br>In 1995, it would have taken roughly half as long.";
+}
